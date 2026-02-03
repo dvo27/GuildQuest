@@ -1,5 +1,5 @@
 from typing import Optional
-from core.Game_Time import Game_Time
+from core import Game_Time
 from .Realm import Realm
 from .User import User
 from .Quest_Event import Quest_Event
@@ -119,5 +119,67 @@ class Campaign:
     def change_eventD_type(self, selected: str) -> None:
         self.events_display = selected
 
+    # New functions separate from class diagram
+
+    def can_view(self, user: User) -> bool:
+        """_summary_
+
+        Args:
+            user (User): _description_
+
+        Returns:
+            bool: _description_
+        """
+        return user in self.permitted_users or user in self.edit_users
+
+    def can_edit(self, user: User) -> bool:
+        """_summary_
+
+        Args:
+            user (User): _description_
+
+        Returns:
+            bool: _description_
+        """
+        
+        return user in self.edit_users
     
+    def add_permitted_user(self, user: User) -> None:
+        """_summary_
+
+        Args:
+            user (User): _description_
+        """
+        if user not in self.permitted_users:
+            self.permitted_users.append(user)
+            
+    def add_edit_user(self, user: User) -> None:
+        """_summary_
+
+        Args:
+            user (User): _description_
+
+        Returns:
+            : _description_
+        """
+        if user not in self.edit_users:
+            self.edit_users.append(user)
+            
+        # Editor should also have view permissions
+        if user not in self.permitted_users:
+            self.permitted_users.append(user)
+    
+    def remove_permitted_user(self, user: User) -> None:
+        """_summary_
+
+        Args:
+            user (User): _description_
+        """
+        if user not in self.permitted_users:
+            self.permitted_users.append(user)
+        
+        # Non-viewers should also not be able to edit
+        if user not in self.edit_users:
+            self.edit_users.append(user)
+        
     

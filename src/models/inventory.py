@@ -21,7 +21,7 @@ class Inventory:
         Removes a given item from the inventory
 
         Args:
-            i (Item): Item to remove from inventory
+            i (Item): Item to remove from
         """
         self.items.remove(i)
     
