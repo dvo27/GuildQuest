@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from models import Realm
+from .Realm import Realm
 
 @dataclass
 class User_Settings:
