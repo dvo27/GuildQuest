@@ -1,12 +1,15 @@
 from dataclasses import dataclass, field
-from models import User
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from models import User
 
 @dataclass
 class Realm:
     name: str
     map_id: int
     time_rule: int
-    selected_user: User
+    selected_user: 'User'
     desc: str = "N/A"
         
     def set_desc(self, text: str) -> None:

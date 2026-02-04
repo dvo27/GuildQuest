@@ -1,7 +1,6 @@
 from dataclasses import dataclass, field
 from typing import List, Optional
-
-from core import Game_Time
+from core import GameTime
 from models import Realm, Character, Item
 
 
@@ -9,7 +8,7 @@ from models import Realm, Character, Item
 class Quest_Event:
     name: str
     c_realm: Realm
-    time: Game_Time
+    time: GameTime
     start_time: str
     end_time: str = "N/A"
     

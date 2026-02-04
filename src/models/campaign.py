@@ -1,5 +1,5 @@
 from typing import Optional
-from core import Game_Time
+from core import GameTime
 from .Realm import Realm
 from .User import User
 from .Quest_Event import Quest_Event
@@ -9,7 +9,7 @@ class Campaign:
     def __init__(self,
                  title: str,
                  activity: bool,
-                 time: Game_Time,
+                 time: GameTime,
                  c_realm: Realm,
                  events_display: str,
                  quests: list[Quest_Event] = None,
@@ -65,19 +65,18 @@ class Campaign:
         """
         self.c_realm = cho_realm
 
-    def create_quest(self, name: str, 
-                     time: Game_Time, 
-                     ch_realm: Realm, 
-                     start_time: str, 
+    def create_quest(self, name: str,
+                     time: GameTime,
+                     ch_realm: Realm,
+                     start_time: str,
                      end_time: str = "N/A") -> Quest_Event:
-        
         """
         Creates a new quest object to add to a Campaign's list of quests
 
         Returns:
             Quest_Event: Quest_Event object we created
         """
-        
+
         q = Quest_Event(name, ch_realm, time, start_time, end_time)
         self.quests.append(q)
         return q
@@ -95,15 +94,15 @@ class Campaign:
         # q_num is an index for now; later replace with quest_id
         if q_num < 0 or q_num >= len(self.quests):
             raise IndexError("Quest index out of range")
-        
+
         quest = self.quests[q_num]
-        
+
         if name is not None:
             quest.set_name(name)
-            
+
         if start_time is not None:
             quest.set_starttime(start_time)
-            
+
         if realm is not None:
             quest.set_realm(realm)
 
@@ -141,9 +140,9 @@ class Campaign:
         Returns:
             bool: _description_
         """
-        
+
         return user in self.edit_users
-    
+
     def add_permitted_user(self, user: User) -> None:
         """_summary_
 
@@ -152,7 +151,7 @@ class Campaign:
         """
         if user not in self.permitted_users:
             self.permitted_users.append(user)
-            
+
     def add_edit_user(self, user: User) -> None:
         """_summary_
 
@@ -164,11 +163,11 @@ class Campaign:
         """
         if user not in self.edit_users:
             self.edit_users.append(user)
-            
+
         # Editor should also have view permissions
         if user not in self.permitted_users:
             self.permitted_users.append(user)
-    
+
     def remove_permitted_user(self, user: User) -> None:
         """_summary_
 
@@ -177,9 +176,7 @@ class Campaign:
         """
         if user not in self.permitted_users:
             self.permitted_users.append(user)
-        
+
         # Non-viewers should also not be able to edit
         if user not in self.edit_users:
             self.edit_users.append(user)
-        
-    
