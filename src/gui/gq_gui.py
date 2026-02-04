@@ -34,6 +34,7 @@ class gq_GUI(tk.Tk):
         
         # Dictionary to hold screen frames
         self.screens = {}
+        self.current_screen = None  # Track current screen
         
         # Start with login screen
         self.show_screen("login")
@@ -51,6 +52,14 @@ class gq_GUI(tk.Tk):
         }
         
     def show_screen(self, screen_name):
+        # If this screen already exists and is current, do nothing
+        if self.current_screen == screen_name and screen_name in self.screens:
+            return
+        
+        # Hide current screen if exists
+        if self.current_screen and self.current_screen in self.screens:
+            self.screens[self.current_screen].pack_forget()
+            
         if screen_name == "login":
             from gui.screens.login_screen import LoginScreen
             if screen_name not in self.screens:
@@ -62,4 +71,17 @@ class gq_GUI(tk.Tk):
                 self.screens[screen_name] = MainMenu(self.container, self)
             
         self.screens[screen_name].pack(fill='both', expand=True)
+        self.current_screen = screen_name
 
+    def refresh_screen(self, screen_name):
+        """
+        Refresh a screen by destroying and recreating it.
+        Useful when data has changed.
+        """
+        # Destroy the old screen if it exists
+        if screen_name in self.screens:
+            self.screens[screen_name].destroy()
+            del self.screens[screen_name]
+        
+        # Show the screen (will create it fresh)
+        self.show_screen(screen_name)
