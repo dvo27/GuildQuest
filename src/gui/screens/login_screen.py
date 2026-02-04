@@ -9,18 +9,22 @@ from models import User, User_Settings
 class LoginScreen(BaseScreen):
     def create_widgets(self):
         """Create the login/register screen"""
-
+        
+        ########################################
+        # TOP AREA:
+        ########################################
+        
         # Container for ASCII art (centered)
         art_frame = tk.Frame(self)
         art_frame.pack(pady=30)
 
         # Simpler ASCII Art that will display correctly
         art = r"""
-   ______      _ __    __   ____                  __ 
-  / ____/_  __(_) /___/ /  / __ \__  _____  _____/ /_
- / / __/ / / / / / __  /  / / / / / / / _ \/ ___/ __/
-/ /_/ / /_/ / / / /_/ /  / /_/ / /_/ /  __(__  ) /_  
-\____/\__,_/_/_/\__,_/   \___\_\__,_/\___/____/\__/
+           ______      _ __    __   ____                  __ 
+          / ____/_  __(_) /___/ /  / __ \__  _____  _____/ /_
+         / / __/ / / / / / __  /  / / / / / / / _ \/ ___/ __/
+        / /_/ / /_/ / / / /_/ /  / /_/ / /_/ /  __(__  ) /_  
+        \____/\__,_/_/_/\__,_/   \___\_\__,_/\___/____/\__/
         """
 
         tk.Label(
@@ -39,7 +43,10 @@ class LoginScreen(BaseScreen):
             font=('Courier', 20, 'bold')
         ).pack(pady=10)
 
-        # Main container for form
+        ########################################
+        # MAIN AREA
+        ########################################
+        
         self.main_container = tk.Frame(self)
         self.main_container.pack(pady=30)
 
@@ -124,6 +131,12 @@ class LoginScreen(BaseScreen):
 
             if username in self.app.users:
                 self.app.current_user = self.app.users[username]
+                
+                # Refresh screen on login
+                if "main_menu" in self.app.screens:
+                    self.app.screens["main_menu"].destroy()
+                    del self.app.screens["main_menu"]
+                
                 messagebox.showinfo("Success", f"Welcome back, {username}!")
                 self.navigate_to("main_menu")
             else:
@@ -215,6 +228,10 @@ class LoginScreen(BaseScreen):
                 number_of_campaigns=0,
                 user_settings=settings
             )
+
+            if "main_menu" in self.app.screens:
+                self.app.screens["main_menu"].destroy()
+                del self.app.screens["main_menu"]
 
             self.app.users[username] = user
             self.app.current_user = user

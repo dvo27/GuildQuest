@@ -10,6 +10,10 @@ class MainMenu(BaseScreen):
     def create_widgets(self):
         """Create the main menu screen"""
         
+        ##################################################
+        # TOP LEVEL:
+        ##################################################
+        
         # Header bar
         header_frame = tk.Frame(self, bg='#1a1a1a', height=60)
         header_frame.pack(fill='x')
@@ -34,7 +38,10 @@ class MainMenu(BaseScreen):
             font=('Courier', 12)
         ).pack(side='right', padx=20, pady=15)
         
-        # Main content area
+        ##################################################
+        # MAIN MENU LABEL AREA
+        ##################################################
+        
         content_frame = tk.Frame(self, bg='#2b2b2b')
         content_frame.pack(fill='both', expand=True)
         
@@ -58,6 +65,10 @@ class MainMenu(BaseScreen):
             fg='#888888',
             font=('Courier', 12)
         ).pack()
+        
+        ##################################################
+        # BUTTONS AREA
+        ##################################################
         
         # Menu buttons container
         button_container = tk.Frame(content_frame, bg='#2b2b2b')
@@ -129,11 +140,12 @@ class MainMenu(BaseScreen):
         """Placeholder for character management"""
         messagebox.showinfo("Coming Soon", "Character management feature coming soon!")
     
+    # SHOW AVAILABLE REALMS WINDOW
     def show_realm_info(self):
         """Show realm information dialog"""
         dialog = tk.Toplevel(self.app)
         dialog.title("Realm Information")
-        dialog.geometry("600x500")
+        dialog.geometry("600x700")
         dialog.configure(bg='#2b2b2b')
         
         # Title
@@ -142,7 +154,7 @@ class MainMenu(BaseScreen):
             text="Available Realms",
             bg='#2b2b2b',
             fg='white',
-            font=('Arial', 18, 'bold')
+            font=('Courier', 18, 'bold')
         ).pack(pady=20)
         
         # Current world time
@@ -220,16 +232,16 @@ class MainMenu(BaseScreen):
             text="Close",
             command=dialog.destroy,
             bg='#4a4a4a',
-            fg='white',
-            font=('Arial', 12),
+            font=('Courier', 12),
             width=15
         ).pack(pady=15)
     
+    # SHOW ADVANCE CLOCK WINDOW
     def show_clock_advance(self):
         """Show dialog to advance world clock"""
         dialog = tk.Toplevel(self.app)
         dialog.title("Advance World Clock")
-        dialog.geometry("400x300")
+        dialog.geometry("400x500")
         dialog.configure(bg='#2b2b2b')
         
         # Title
@@ -238,7 +250,7 @@ class MainMenu(BaseScreen):
             text="Advance World Clock",
             bg='#2b2b2b',
             fg='white',
-            font=('Arial', 16, 'bold')
+            font=('Courier', 16, 'bold')
         ).pack(pady=20)
         
         # Current time
@@ -304,8 +316,7 @@ class MainMenu(BaseScreen):
             text="Advance",
             command=do_advance,
             bg='#4a4a4a',
-            fg='white',
-            font=('Arial', 12),
+            font=('Courier', 12),
             width=12
         ).pack(side='left', padx=5)
         
@@ -314,8 +325,7 @@ class MainMenu(BaseScreen):
             text="Cancel",
             command=dialog.destroy,
             bg='#4a4a4a',
-            fg='white',
-            font=('Arial', 12),
+            font=('Courier', 12),
             width=12
         ).pack(side='left', padx=5)
     

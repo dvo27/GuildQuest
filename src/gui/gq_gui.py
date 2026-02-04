@@ -27,7 +27,7 @@ class gq_GUI(tk.Tk):
         
         # Window Setup
         self.title("GuildQuest")
-        self.geometry('800x500')
+        self.geometry('800x600')
         
         self.container = tk.Frame(self)
         self.container.pack(fill='both', expand=True)
@@ -47,8 +47,22 @@ class gq_GUI(tk.Tk):
                 map_id=1,
                 time_rule=0,
                 selected_user=None,
-                desc="The central realm"
+                desc="The central realm where all adventures begin"
             ),
+            "Eastern": Realm(
+                name="Eastern Highlands",
+                map_id=2,
+                time_rule=120,
+                selected_user=None,
+                desc="Mountains and ancient ruins"
+            ),
+            "Western": Realm(
+                name="Western Shores",
+                map_id=3,
+                time_rule=-180,
+                selected_user=None,
+                desc="Coastal cities and trading ports"
+            )
         }
         
     def show_screen(self, screen_name):
@@ -69,6 +83,10 @@ class gq_GUI(tk.Tk):
             from gui.screens.main_menu import MainMenu
             if screen_name not in self.screens:
                 self.screens[screen_name] = MainMenu(self.container, self)
+            
+        elif screen_name == "campaign":
+            from gui.screens.campaign_screen import CampaignScreen
+            self.screens[screen_name] = CampaignScreen(self.container, self)
             
         self.screens[screen_name].pack(fill='both', expand=True)
         self.current_screen = screen_name
