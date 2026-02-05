@@ -137,8 +137,8 @@ class MainMenu(BaseScreen):
         ).pack(pady=8)
     
     def show_character_management(self):
-        """Placeholder for character management"""
-        messagebox.showinfo("Coming Soon", "Character management feature coming soon!")
+        """Navigate to character management screen"""
+        self.navigate_to("character")
     
     # SHOW AVAILABLE REALMS WINDOW
     def show_realm_info(self):

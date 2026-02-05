@@ -472,10 +472,25 @@ class CampaignScreen(BaseScreen):
     
     def show_quest_management(self, campaign, campaign_idx):
         """Navigate to quest management for this campaign"""
-        # TODO: Implement quest management screen
-        # For now, show a placeholder
-        messagebox.showinfo(
-            "Coming Soon",
-            f"Quest management for '{campaign.title}' is coming soon!\n\n"
-            f"This campaign has {len(campaign.quests)} quest(s)."
-        )
+        # Import here to avoid circular import
+        from gui.screens.quest_screen import QuestScreen
+        
+        # Create a unique key for this campaign's quest screen
+        screen_key = f"quest_{campaign_idx}"
+        
+        # If screen exists, remove it to force refresh
+        if screen_key in self.app.screens:
+            self.app.screens[screen_key].destroy()
+            del self.app.screens[screen_key]
+        
+        # Create new quest screen
+        quest_screen = QuestScreen(self.app.container, self.app, campaign, campaign_idx)
+        self.app.screens[screen_key] = quest_screen
+        
+        # Hide current screen
+        if self.app.current_screen and self.app.current_screen in self.app.screens:
+            self.app.screens[self.app.current_screen].pack_forget()
+        
+        # Show quest screen
+        quest_screen.pack(fill='both', expand=True)
+        self.app.current_screen = screen_key

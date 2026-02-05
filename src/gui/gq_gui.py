@@ -87,6 +87,10 @@ class gq_GUI(tk.Tk):
         elif screen_name == "campaign":
             from gui.screens.campaign_screen import CampaignScreen
             self.screens[screen_name] = CampaignScreen(self.container, self)
+        
+        elif screen_name == "character":
+            from gui.screens.character_screen import CharacterScreen
+            self.screens[screen_name] = CharacterScreen(self.container, self)
             
         self.screens[screen_name].pack(fill='both', expand=True)
         self.current_screen = screen_name
