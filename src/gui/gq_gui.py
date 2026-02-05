@@ -20,10 +20,10 @@ class gq_GUI(tk.Tk):
         super().__init__()
         
         # GuildQuest data
-        self.world_clock = WorldClock()
-        self.users = {}
-        self.realms = self._create_default_realms()
-        self.current_user = None
+        self.world_clock: WorldClock = WorldClock()
+        self.users: dict = {}
+        self.realms: dict = self._create_default_realms()
+        self.current_user: User = None
         
         # Window Setup
         self.title("GuildQuest")
