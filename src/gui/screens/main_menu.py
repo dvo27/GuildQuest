@@ -8,12 +8,11 @@ from gui.screens.base_screen import BaseScreen
 
 class MainMenu(BaseScreen):
     def create_widgets(self):
-        """Create the main menu screen"""
+        """
+        Create the main menu screen
+        """
         
-        ##################################################
         # TOP LEVEL:
-        ##################################################
-        
         # Header bar
         header_frame = tk.Frame(self, bg='#1a1a1a', height=60)
         header_frame.pack(fill='x')
@@ -38,10 +37,7 @@ class MainMenu(BaseScreen):
             font=('Courier', 12)
         ).pack(side='right', padx=20, pady=15)
         
-        ##################################################
         # MAIN MENU LABEL AREA
-        ##################################################
-        
         content_frame = tk.Frame(self, bg='#2b2b2b')
         content_frame.pack(fill='both', expand=True)
         
@@ -66,10 +62,7 @@ class MainMenu(BaseScreen):
             font=('Courier', 12)
         ).pack()
         
-        ##################################################
-        # BUTTONS AREA
-        ##################################################
-        
+        # BUTTONS AREA 
         # Menu buttons container
         button_container = tk.Frame(content_frame, bg='#2b2b2b')
         button_container.pack(pady=30)
@@ -137,12 +130,18 @@ class MainMenu(BaseScreen):
         ).pack(pady=8)
     
     def show_character_management(self):
-        """Navigate to character management screen"""
+        """
+        Navigate to character management screen
+        """
+        
         self.navigate_to("character")
     
     # SHOW AVAILABLE REALMS WINDOW
     def show_realm_info(self):
-        """Show realm information dialog"""
+        """
+        Show realm information dialog
+        """
+        
         dialog = tk.Toplevel(self.app)
         dialog.title("Realm Information")
         dialog.geometry("600x700")
@@ -238,7 +237,10 @@ class MainMenu(BaseScreen):
     
     # SHOW ADVANCE CLOCK WINDOW
     def show_clock_advance(self):
-        """Show dialog to advance world clock"""
+        """
+        Show dialog to advance world clock
+        """
+        
         dialog = tk.Toplevel(self.app)
         dialog.title("Advance World Clock")
         dialog.geometry("400x500")
@@ -330,13 +332,15 @@ class MainMenu(BaseScreen):
         ).pack(side='left', padx=5)
     
     def show_settings(self):
-        """Placeholder for settings"""
+        """
+        Placeholder for settings
+        """
         messagebox.showinfo("Coming Soon", "Settings feature coming soon!")
     
     def logout(self):
-        """Logout and return to login screen"""
+        """
+        Logout and return to login screen
+        """
         if messagebox.askyesno("Logout", "Are you sure you want to logout?"):
             self.app.current_user = None
-            # Clear the screens cache to force fresh login screen
-            # self.app.screens.clear()
             self.navigate_to("login")

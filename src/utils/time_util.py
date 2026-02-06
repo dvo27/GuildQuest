@@ -33,7 +33,7 @@ def convert_to_realm_time(world_time: GameTime, realm: Realm) -> GameTime:
     return GameTime(days, hours, minutes, 0)
 
 
-def   -> str:
+def format_time_range(start_time: GameTime, end_time: GameTime = None) -> str:
     """
     Format a time range for display.
     

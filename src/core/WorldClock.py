@@ -4,7 +4,6 @@ from .GameTime import GameTime
 Created under my assumptions for how world_clock works in interaction with Game_Time
 """
 
-
 class WorldClock:
     """
     World clock for an entire campaign.
@@ -36,6 +35,12 @@ class WorldClock:
         self.current_time = game_time
 
     def get_current_time(self) -> GameTime:
+        """
+        Getter method to get self.current_time
+
+        Returns:
+            GameTime: GameTime object of the current time
+        """
         return self.current_time
 
     def advance(self, days: int = 0, hours: int = 0, minutes: int = 0) -> None:

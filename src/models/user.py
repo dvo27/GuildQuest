@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING, Optional
 from core import GameTime
 
 if TYPE_CHECKING:
-    from .Campaign import Campaign
     from .User_Settings import User_Settings
     from .Character import Character
     from .Realm import Realm
@@ -33,16 +32,39 @@ class User:
                     # should be list of users and same for edit_users
                     permitted_users: list['User'],
                     edit_users: list['User']) -> None:
+        """
+        Creates a new campaign for the user
+
+        Args:
+            c_name (str): Campaign name
+            activity (bool): Campaign's activity status
+            time (GameTime): GameTime object for the Campaign's time
+            realm (Realm): Realm of the new Campaign
+            events_display (str): Event display type of campaign
+            quests (list[&#39;Quest_Event&#39;]): List of Quest_Events for Campaign
+            permitted_users (list[&#39;User&#39;]): List of permitted users for Campaign
+            edit_users (list[&#39;User&#39;]): List of users with edit permissions for Campaign
+        """
 
         from .Campaign import Campaign  # avoids circular import at module level
 
-        # do we need quests, perm_users, and edit users here if they are default to None?
         new_camp = Campaign(c_name, activity, time, realm,
                             events_display, quests, permitted_users, edit_users)
 
         self.campaigns.append(new_camp)
 
     def update_camp(self, c_num: int, name: str, change_act_status: bool) -> None:
+        """ 
+        Updates a campaigns attributes (name and activity status)
+
+        Args:
+            c_num (int): Campaign identifier
+            name (str): New name for campaign
+            change_act_status (bool): New activity status of campaign
+
+        Raises:
+            IndexError: _description_
+        """
         if c_num < 0 or c_num >= len(self.campaigns):
             raise IndexError("Quest index out of range")
 
@@ -55,6 +77,12 @@ class User:
             camp.change_act()
 
     def delete_camp(self, c_num: int) -> None:
+        """ 
+        Deletes a campaign
+
+        Args:
+            c_num (int): Campaign identifier
+        """
         if c_num < 0 or c_num >= len(self.campaigns):
             raise IndexError("Quest index out of range")
 

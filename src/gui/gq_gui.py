@@ -40,7 +40,10 @@ class gq_GUI(tk.Tk):
         self.show_screen("login")
 
     def _create_default_realms(self):
-        """Create default realms"""
+        """
+        Create default realms
+        """
+        
         return {
             "Central": Realm(
                 name="Central Kingdom",
@@ -66,6 +69,12 @@ class gq_GUI(tk.Tk):
         }
 
     def show_screen(self, screen_name):
+        """
+        Display the correct screen on the GUI
+
+        Args:
+            screen_name (str): Name of screen to be displayed
+        """
         # If this screen already exists and is current, do nothing
         if self.current_screen == screen_name and screen_name in self.screens:
             return
@@ -96,9 +105,12 @@ class gq_GUI(tk.Tk):
         self.current_screen = screen_name
 
     def refresh_screen(self, screen_name):
-        """
+        """        
         Refresh a screen by destroying and recreating it.
         Useful when data has changed.
+
+        Args:
+            screen_name (str): Name of screen to be refreshed
         """
         # Destroy the old screen if it exists
         if screen_name in self.screens:

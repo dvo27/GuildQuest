@@ -8,12 +8,11 @@ from models import User, User_Settings
 
 class LoginScreen(BaseScreen):
     def create_widgets(self):
-        """Create the login/register screen"""
+        """
+        Create the login/register screen
+        """
 
-        ########################################
         # TOP AREA:
-        ########################################
-
         # Container for ASCII art (centered)
         art_frame = tk.Frame(self)
         art_frame.pack(pady=30)
@@ -43,10 +42,7 @@ class LoginScreen(BaseScreen):
             font=('Courier', 20, 'bold')
         ).pack(pady=10)
 
-        ########################################
         # MAIN AREA
-        ########################################
-
         self.main_container = tk.Frame(self)
         self.main_container.pack(pady=30)
 
@@ -54,7 +50,10 @@ class LoginScreen(BaseScreen):
         self.show_initial_buttons()
 
     def show_initial_buttons(self):
-        """Show initial Login/Register/Exit buttons"""
+        """
+        Show initial Login/Register/Exit buttons
+        """
+        
         # Clear container
         for widget in self.main_container.winfo_children():
             widget.destroy()
@@ -89,7 +88,10 @@ class LoginScreen(BaseScreen):
         ).pack(pady=10)
 
     def show_login_form(self):
-        """Show login form"""
+        """
+        Show login form
+        """
+        
         # Clear container
         for widget in self.main_container.winfo_children():
             widget.destroy()
@@ -161,7 +163,10 @@ class LoginScreen(BaseScreen):
         ).pack(side='left', padx=5)
 
     def show_register_form(self):
-        """Show registration form"""
+        """
+        Show registration form
+        """
+        
         # Clear container
         for widget in self.main_container.winfo_children():
             widget.destroy()

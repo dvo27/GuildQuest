@@ -111,55 +111,62 @@ class Campaign:
         Removes a Quest_Event from a Campaign's quests list
 
         Args:
-            q_num (int): _description_
+            q_num (int): index of quest
         """
         self.quests.pop(q_num)
 
     def change_eventD_type(self, selected: str) -> None:
+        """
+        Changes display type of event
+
+        Args:
+            selected (str): Selected display type to change to
+        """
         self.events_display = selected
 
     # New functions separate from class diagram
 
     def can_view(self, user: User) -> bool:
-        """_summary_
+        """
+        Returns bool of whether a user can view campaign
 
         Args:
-            user (User): _description_
+            user (User): User to check view status
 
         Returns:
-            bool: _description_
+            bool: View status of user
         """
         return user in self.permitted_users or user in self.edit_users
 
     def can_edit(self, user: User) -> bool:
-        """_summary_
+        """
+        Returns bool of whether user has edit permission
 
         Args:
-            user (User): _description_
+            user (User): User to check edit status
 
         Returns:
-            bool: _description_
+            bool: Edit status of user
         """
 
         return user in self.edit_users
 
     def add_permitted_user(self, user: User) -> None:
-        """_summary_
+        """
+        Add user to permitted_users list
 
         Args:
-            user (User): _description_
+            user (User): User to add
         """
         if user not in self.permitted_users:
             self.permitted_users.append(user)
 
     def add_edit_user(self, user: User) -> None:
-        """_summary_
+        """
+        Add user to have edit permissions
 
         Args:
-            user (User): _description_
-
-        Returns:
-            : _description_
+            user (User): User to add
         """
         if user not in self.edit_users:
             self.edit_users.append(user)
@@ -169,10 +176,11 @@ class Campaign:
             self.permitted_users.append(user)
 
     def remove_permitted_user(self, user: User) -> None:
-        """_summary_
+        """
+        Remove a user from permitted list
 
         Args:
-            user (User): _description_
+            user (User): User to remove
         """
         if user not in self.permitted_users:
             self.permitted_users.append(user)

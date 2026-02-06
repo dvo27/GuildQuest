@@ -1,6 +1,5 @@
 """
-Character Management Screen for GuildQuest
-Allows creating, viewing, editing, and deleting characters and their inventory
+Character management screen for GuildQuest: Allows creating, viewing, editing, and deleting characters and their inventory
 """
 
 import tkinter as tk
@@ -10,7 +9,9 @@ from models import Character, Item
 
 class CharacterScreen(BaseScreen):
     def create_widgets(self):
-        """Create the character management screen"""
+        """
+        Create the character management screen
+        """
         
         # Header bar
         header_frame = tk.Frame(self, bg='#1a1a1a', height=60)
@@ -83,7 +84,10 @@ class CharacterScreen(BaseScreen):
         self.refresh_characters_list()
     
     def refresh_characters_list(self):
-        """Refresh the list of characters"""
+        """
+        Refresh the list of characters
+        """
+        
         # Clear existing widgets
         for widget in self.characters_container.winfo_children():
             widget.destroy()
@@ -128,7 +132,10 @@ class CharacterScreen(BaseScreen):
                 self.create_character_card(scrollable_frame, character, idx)
     
     def create_character_card(self, parent, character, idx):
-        """Create a card widget for a character"""
+        """
+        Create a card widget for a character
+        """
+        
         # Card frame
         card = tk.Frame(parent, bg='#3a3a3a', relief='raised', bd=2)
         card.pack(fill='x', pady=10, padx=5)
@@ -224,7 +231,10 @@ class CharacterScreen(BaseScreen):
         ).pack(side='left', padx=5)
     
     def show_create_character_dialog(self):
-        """Show dialog to create a new character"""
+        """
+        Show dialog to create a new character
+        """
+        
         dialog = tk.Toplevel(self.app)
         dialog.title("Create New Character")
         dialog.geometry("500x450")
@@ -357,7 +367,10 @@ class CharacterScreen(BaseScreen):
         ).pack(side='left', padx=5)
     
     def show_edit_character_dialog(self, character, char_idx):
-        """Show dialog to edit a character"""
+        """
+        Show dialog to edit a character
+        """
+        
         dialog = tk.Toplevel(self.app)
         dialog.title("Edit Character")
         dialog.geometry("500x450")
@@ -484,7 +497,10 @@ class CharacterScreen(BaseScreen):
         ).pack(side='left', padx=5)
     
     def delete_character(self, char_idx):
-        """Delete a character"""
+        """
+        Delete a character
+        """
+        
         character = self.app.current_user.characters[char_idx]
         
         if messagebox.askyesno(
@@ -505,7 +521,10 @@ class CharacterScreen(BaseScreen):
                 del self.app.screens["main_menu"]
     
     def show_inventory_management(self, character, char_idx):
-        """Show inventory management dialog"""
+        """
+        Show inventory management dialog
+        """
+        
         dialog = tk.Toplevel(self.app)
         dialog.title(f"Inventory: {character.name}")
         dialog.geometry("600x500")
@@ -663,7 +682,10 @@ class CharacterScreen(BaseScreen):
         ).pack(pady=(0, 20))
     
     def show_add_item_dialog(self, character, parent_dialog):
-        """Show dialog to add an item to character inventory"""
+        """
+        Show dialog to add an item to character inventory
+        """
+        
         dialog = tk.Toplevel(self.app)
         dialog.title("Add Item")
         dialog.geometry("500x500")

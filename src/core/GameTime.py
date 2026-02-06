@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .WorldClock import WorldClock
+    from .WorldClock import WorldClock # Fixes circular dependency
 
 
 class GameTime:
