@@ -9,11 +9,11 @@ from models import User, User_Settings
 class LoginScreen(BaseScreen):
     def create_widgets(self):
         """Create the login/register screen"""
-        
+
         ########################################
         # TOP AREA:
         ########################################
-        
+
         # Container for ASCII art (centered)
         art_frame = tk.Frame(self)
         art_frame.pack(pady=30)
@@ -46,7 +46,7 @@ class LoginScreen(BaseScreen):
         ########################################
         # MAIN AREA
         ########################################
-        
+
         self.main_container = tk.Frame(self)
         self.main_container.pack(pady=30)
 
@@ -131,12 +131,12 @@ class LoginScreen(BaseScreen):
 
             if username in self.app.users:
                 self.app.current_user = self.app.users[username]
-                
+
                 # Refresh screen on login
                 if "main_menu" in self.app.screens:
                     self.app.screens["main_menu"].destroy()
                     del self.app.screens["main_menu"]
-                
+
                 messagebox.showinfo("Success", f"Welcome back, {username}!")
                 self.navigate_to("main_menu")
             else:
@@ -219,7 +219,7 @@ class LoginScreen(BaseScreen):
             # Create user
             settings = User_Settings(
                 time_display='24hr',
-                switch_time=False,
+                switch_theme=False,
                 current_realm=self.app.realms["Central"]
             )
 

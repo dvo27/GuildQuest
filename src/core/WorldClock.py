@@ -28,10 +28,10 @@ class WorldClock:
 
     def set_time(self, game_time: GameTime) -> None:
         """
-        Sets self.current_time to 
+        Sets self.current_time to the given Game_Time obj
 
         Args:
-            game_time (Game_Time): _description_
+            game_time (Game_Time): Game_Time obj to set current_time to
         """
         self.current_time = game_time
 

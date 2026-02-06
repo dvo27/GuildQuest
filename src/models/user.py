@@ -10,7 +10,8 @@ if TYPE_CHECKING:
 
 
 class User:
-    def __init__(self, username: str,
+    def __init__(self, 
+                 username: str,
                  number_of_campaigns: int,
                  user_settings: 'User_Settings',
                  campaigns: Optional[list['Campaign']] = None,

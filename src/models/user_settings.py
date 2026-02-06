@@ -3,17 +3,15 @@ from .Realm import Realm
 
 @dataclass
 class User_Settings:
-    time_display: str = '12hr'  # make time_display into enum ('12hr' and '24hr')
-    switch_time: bool = False
+    time_display: str = '12hr'
+    switch_theme: bool = False
     current_realm: Realm = None
 
     def set_display(self, s:str) -> None:
-        # if s not in valid displays throw error
-
         self.time_display = s
 
     def set_theme(self) -> None:
         pass
     
-    def set_curr_theme(self, r: Realm) -> None:
+    def set_curr_realm(self, r: Realm) -> None:
         pass

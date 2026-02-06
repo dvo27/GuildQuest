@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .WorldClock import WorldClock    # Only import here for type hints
+    from .WorldClock import WorldClock
 
 
 class GameTime:
