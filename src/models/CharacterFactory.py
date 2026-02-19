@@ -1,100 +1,80 @@
+"""
+*****NEW IMPLEMENTAION FOR A3*****
+Abstract Factory for Character creation - Factory Method Pattern
+
+This module defines the abstract base class for the Factory Method Pattern.
+Each concrete factory (WarriorFactory, MageFactory, etc.) must implement
+the factory methods to create characters with class-specific equipment.
+"""
+
+from abc import ABC, abstractmethod
+from typing import List
 from .Character import Character
 from .Item import Item
 
-class CharacterFactory:
-    """Factory for creating characters with class-specific starting equipment and bonuses"""
+
+class CharacterFactory(ABC):
+    """
+    Abstract Factory for creating characters.
     
-    # Class-specific starting equipment and level bonuses
-    CLASS_CONFIGS = {
-        "Warrior": {
-            "starting_items": [
-                Item(name="Iron Sword", rarity="Common", damage=10, description="A sturdy blade"),
-                Item(name="Wooden Shield", rarity="Common", damage=0, description="Basic protection")
-            ],
-            "level_bonus": 0
-        },
-        "Mage": {
-            "starting_items": [
-                Item(name="Apprentice Staff", rarity="Common", damage=8, description="Channel your magic"),
-                Item(name="Spellbook", rarity="Uncommon", damage=0, description="Contains basic spells")
-            ],
-            "level_bonus": 0
-        },
-        "Rogue": {
-            "starting_items": [
-                Item(name="Steel Dagger", rarity="Common", damage=7, description="Quick and deadly"),
-                Item(name="Lockpicks", rarity="Common", damage=0, description="For opening chests")
-            ],
-            "level_bonus": 0
-        },
-        "Cleric": {
-            "starting_items": [
-                Item(name="Holy Mace", rarity="Common", damage=6, description="Blessed weapon"),
-                Item(name="Prayer Beads", rarity="Common", damage=0, description="For healing rituals")
-            ],
-            "level_bonus": 0
-        },
-        "Ranger": {
-            "starting_items": [
-                Item(name="Hunting Bow", rarity="Common", damage=9, description="For ranged attacks"),
-                Item(name="Quiver", rarity="Common", damage=0, description="Holds 20 arrows")
-            ],
-            "level_bonus": 0
-        },
-        "Paladin": {
-            "starting_items": [
-                Item(name="Longsword", rarity="Uncommon", damage=12, description="A knight's weapon"),
-                Item(name="Holy Symbol", rarity="Common", damage=0, description="Divine protection")
-            ],
-            "level_bonus": 0
-        },
-        "Bard": {
-            "starting_items": [
-                Item(name="Lute", rarity="Common", damage=4, description="For inspiring allies"),
-                Item(name="Dagger", rarity="Common", damage=5, description="Backup weapon")
-            ],
-            "level_bonus": 0
-        },
-        "Druid": {
-            "starting_items": [
-                Item(name="Wooden Staff", rarity="Common", damage=7, description="Nature's power"),
-                Item(name="Herb Pouch", rarity="Common", damage=0, description="Medicinal plants")
-            ],
-            "level_bonus": 0
-        }
-    }
+    This is the "Creator" in the Factory Method Pattern. Subclasses must
+    implement create_character() and get_starting_items() to provide
+    class-specific character creation.
+    """
     
-    @staticmethod
-    def create_character(name: str, character_class: str, level: int = 1) -> Character:
+    @abstractmethod
+    def create_character(self, name: str, level: int) -> Character:
         """
-        Factory method to create a character with class-specific starting equipment.
+        Factory Method: Create a character of a specific class.
+        
+        This method must be implemented by concrete factories to create
+        the appropriate character type.
         
         Args:
             name: Character name
-            character_class: One of the 8 character classes
-            level: Starting level (default 1)
+            level: Starting level (1-100)
             
         Returns:
-            Character: Fully equipped character with class-specific items
-            
-        Raises:
-            ValueError: If character_class is not recognized
+            Character: A new character instance
         """
-        if character_class not in CharacterFactory.CLASS_CONFIGS:
-            raise ValueError(f"Unknown character class: {character_class}")
+        pass
+    
+    @abstractmethod
+    def get_starting_items(self) -> List[Item]:
+        """
+        Factory Method: Get class-specific starting equipment.
         
-        # Get class configuration
-        config = CharacterFactory.CLASS_CONFIGS[character_class]
+        Each character class starts with different items. Subclasses must
+        implement this method to return the appropriate starting gear.
         
-        # Create character with level bonus
-        character = Character(
-            name=name,
-            character_class=character_class,
-            level=level + config["level_bonus"]
-        )
+        Returns:
+            List[Item]: List of starting items for this character class
+        """
+        pass
+    
+    def create_equipped_character(self, name: str, level: int = 1) -> Character:
+        """
+        Template Method: Create a fully equipped character.
         
-        # Add starting items to inventory
-        for item in config["starting_items"]:
+        This method uses the factory methods (create_character and
+        get_starting_items) to create a character and equip them with
+        starting items. This is the public interface that clients should use.
+        
+        Args:
+            name: Character name
+            level: Starting level (default: 1)
+            
+        Returns:
+            Character: A fully equipped character with starting inventory
+        """
+        # Call the factory method to create the character
+        character = self.create_character(name, level)
+        
+        # Call the factory method to get starting items
+        starting_items = self.get_starting_items()
+        
+        # Equip the character with starting items
+        for item in starting_items:
             character.curr_inventory.add_inventory(item)
         
         return character

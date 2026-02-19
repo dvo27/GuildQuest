@@ -67,7 +67,7 @@ class LoginScreen(BaseScreen):
             self.main_container,
             text="Login",
             command=self.show_login_form,
-            font=('courier', 11),
+            font=('courier', 12),
             **button_config
         ).pack(pady=10)
 
@@ -75,7 +75,7 @@ class LoginScreen(BaseScreen):
             self.main_container,
             text="Register",
             command=self.show_register_form,
-            font=('courier', 11),
+            font=('courier', 12),
             **button_config
         ).pack(pady=10)
 
@@ -83,7 +83,7 @@ class LoginScreen(BaseScreen):
             self.main_container,
             text="Exit",
             command=self.app.destroy,
-            font=('courier', 11),
+            font=('courier', 12),
             **button_config
         ).pack(pady=10)
 
