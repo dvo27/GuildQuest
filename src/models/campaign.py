@@ -183,8 +183,8 @@ class Campaign:
             user (User): User to remove
         """
         if user not in self.permitted_users:
-            self.permitted_users.append(user)
+            self.permitted_users.remove(user)
 
         # Non-viewers should also not be able to edit
         if user not in self.edit_users:
-            self.edit_users.append(user)
+            self.edit_users.remove(user)
