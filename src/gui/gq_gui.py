@@ -1,19 +1,6 @@
 import tkinter as tk
-from tkinter import ttk
 from core import WorldClock
-from models import Campaign, User, Realm
-
-# class gq_GUI:
-#     def __init__(self, given_campaign: Campaign, selected_user: User):
-#         self.given_campaign = given_campaign
-#         self.selected_user = selected_user
-
-#     def show_text_display(self) -> None:
-#         pass
-
-#     def show_classic_display(self) -> None:
-#         pass
-
+from models import User, Realm
 
 class gq_GUI(tk.Tk):
     def __init__(self):

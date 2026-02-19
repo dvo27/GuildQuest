@@ -3,9 +3,10 @@ Character management screen for GuildQuest: Allows creating, viewing, editing, a
 """
 
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import messagebox
 from gui.screens.base_screen import BaseScreen
-from models import Character, Item
+from models import Item
+from models.CharacterFactory import CharacterFactory
 
 
 class CharacterScreen(BaseScreen):
@@ -334,7 +335,7 @@ class CharacterScreen(BaseScreen):
                 return
 
             # Create character (curr_inventory auto-created by default_factory)
-            character = Character(
+            character = CharacterFactory.create_character(
                 name=name,
                 character_class=class_var.get(),
                 level=level
