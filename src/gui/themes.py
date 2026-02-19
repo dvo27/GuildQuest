@@ -2,8 +2,9 @@
 
 
 class Colors:
+    HEADER_DARK_GRAY = '#1a1a1a' # Main top header label color
     DARK_GRAY = '#2b2b2b'  # Form background color
-    GUILD_QUEST_GREEN = '#00ff00'
+    GUILD_QUEST_GREEN = '#00ff00' # main green used in world clock and ascii logo
 
 
 class Fonts:
@@ -13,4 +14,5 @@ class Fonts:
     """CONFIGURATION?"""
     SMALL_COURIER = ('courier', SIZE_SMALL)
 
-    # Form label title? = ('courier', SIZE_MEDIUM, 'bold')
+    # Form label title? = 
+    LABEL_TITLE = ('courier', SIZE_MEDIUM, 'bold')

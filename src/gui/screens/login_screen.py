@@ -182,7 +182,7 @@ class LoginScreen(BaseScreen):
             text="Register New User",
             bg='#2b2b2b',
             fg='white',
-            font=('Courier', 16, 'bold')
+            font=Fonts.LABEL_TITLE
         ).grid(row=0, column=0, columnspan=2, pady=10)
 
         # Username label and entry

@@ -4,6 +4,7 @@ Main Menu Screen for GuildQuest
 
 import tkinter as tk
 from tkinter import messagebox
+from gui.themes import Fonts, Colors
 from gui.screens.base_screen import BaseScreen
 
 
@@ -15,7 +16,7 @@ class MainMenu(BaseScreen):
 
         # TOP LEVEL:
         # Header bar
-        header_frame = tk.Frame(self, bg='#1a1a1a', height=60)
+        header_frame = tk.Frame(self, bg=Colors.HEADER_DARK_GRAY, height=60)
         header_frame.pack(fill='x')
         header_frame.pack_propagate(False)
 
@@ -23,7 +24,7 @@ class MainMenu(BaseScreen):
         tk.Label(
             header_frame,
             text=f"GuildQuest - {self.app.current_user.username}",
-            bg='#1a1a1a',
+            bg=Colors.HEADER_DARK_GRAY,
             fg='white',
             font=('Courier', 16, 'bold')
         ).pack(side='left', padx=20, pady=15)
@@ -33,20 +34,20 @@ class MainMenu(BaseScreen):
         tk.Label(
             header_frame,
             text=f"World Clock: {world_time}",
-            bg='#1a1a1a',
-            fg='#00ff00',
-            font=('Courier', 12)
+            bg=Colors.HEADER_DARK_GRAY,
+            fg=Colors.GUILD_QUEST_GREEN,
+            font=Fonts.SMALL_COURIER
         ).pack(side='right', padx=20, pady=15)
 
         # MAIN MENU LABEL AREA
-        content_frame = tk.Frame(self, bg='#2b2b2b')
+        content_frame = tk.Frame(self, bg=Colors.DARK_GRAY)
         content_frame.pack(fill='both', expand=True)
 
         # Title
         tk.Label(
             content_frame,
             text="Main Menu",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='white',
             font=('Courier', 28, 'bold')
         ).pack(pady=20)
@@ -58,14 +59,14 @@ class MainMenu(BaseScreen):
         tk.Label(
             content_frame,
             text=f"Campaigns: {num_campaigns} | Characters: {num_characters}",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='#888888',
-            font=('Courier', 12)
+            font=Fonts.SMALL_COURIER
         ).pack()
 
         # BUTTONS AREA
         # Menu buttons container
-        button_container = tk.Frame(content_frame, bg='#2b2b2b')
+        button_container = tk.Frame(content_frame, bg=Colors.DARK_GRAY)
         button_container.pack(pady=30)
 
         # Button configuration
@@ -73,7 +74,7 @@ class MainMenu(BaseScreen):
             'width': 30,
             'height': 2,
             'bg': '#4a4a4a',
-            'font': ('Courier', 12),
+            'font': Fonts.SMALL_COURIER,
             'activebackground': '#5a5a5a',
             'activeforeground': 'white'
         }
@@ -126,7 +127,7 @@ class MainMenu(BaseScreen):
             width=30,
             height=2,
             bg='#8a4a4a',
-            font=('Courier', 12),
+            font=Fonts.SMALL_COURIER,
             activebackground='#9a5a5a'
         ).pack(pady=8)
 
@@ -146,13 +147,13 @@ class MainMenu(BaseScreen):
         dialog = tk.Toplevel(self.app)
         dialog.title("Realm Information")
         dialog.geometry("600x700")
-        dialog.configure(bg='#2b2b2b')
+        dialog.configure(bg=Colors.DARK_GRAY)
 
         # Title
         tk.Label(
             dialog,
             text="Available Realms",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='white',
             font=('Courier', 18, 'bold')
         ).pack(pady=20)
@@ -162,13 +163,13 @@ class MainMenu(BaseScreen):
         tk.Label(
             dialog,
             text=f"Current World Clock: {world_time.get_fulltime()}",
-            bg='#2b2b2b',
-            fg='#00ff00',
-            font=('Courier', 12)
+            bg=Colors.DARK_GRAY,
+            fg=Colors.GUILD_QUEST_GREEN,
+            font=Fonts.SMALL_COURIER
         ).pack(pady=10)
 
         # Realms container
-        realms_frame = tk.Frame(dialog, bg='#2b2b2b')
+        realms_frame = tk.Frame(dialog, bg=Colors.DARK_GRAY)
         realms_frame.pack(fill='both', expand=True, padx=20, pady=10)
 
         # Display each realm
@@ -223,7 +224,7 @@ class MainMenu(BaseScreen):
                 realm_frame,
                 text=f"Current Local Time: {local_time.get_fulltime()}",
                 bg='#3a3a3a',
-                fg='#00ff00',
+                fg=Colors.GUILD_QUEST_GREEN,
                 font=('Courier', 10)
             ).pack(anchor='w', padx=15, pady=(5, 10))
 
@@ -233,7 +234,7 @@ class MainMenu(BaseScreen):
             text="Close",
             command=dialog.destroy,
             bg='#4a4a4a',
-            font=('Courier', 12),
+            font=Fonts.SMALL_COURIER,
             width=15
         ).pack(pady=15)
 
@@ -246,13 +247,13 @@ class MainMenu(BaseScreen):
         dialog = tk.Toplevel(self.app)
         dialog.title("Advance World Clock")
         dialog.geometry("400x500")
-        dialog.configure(bg='#2b2b2b')
+        dialog.configure(bg=Colors.DARK_GRAY)
 
         # Title
         tk.Label(
             dialog,
             text="Advance World Clock",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='white',
             font=('Courier', 16, 'bold')
         ).pack(pady=20)
@@ -262,33 +263,34 @@ class MainMenu(BaseScreen):
         tk.Label(
             dialog,
             text=f"Current: {current_time.get_fulltime()}",
-            bg='#2b2b2b',
-            fg='#00ff00',
-            font=('Courier', 12)
+            bg=Colors.DARK_GRAY,
+            fg=Colors.GUILD_QUEST_GREEN,
+            font=Fonts.SMALL_COURIER
         ).pack(pady=10)
 
         # Input frame
-        input_frame = tk.Frame(dialog, bg='#2b2b2b')
+        input_frame = tk.Frame(dialog, bg=Colors.DARK_GRAY)
         input_frame.pack(pady=20)
 
         # Days
-        tk.Label(input_frame, text="Days:", bg='#2b2b2b', fg='white', font=(
-            'Arial', 12)).grid(row=0, column=0, padx=10, pady=5, sticky='e')
-        days_entry = tk.Entry(input_frame, width=10, font=('Arial', 12))
+        tk.Label(input_frame, text="Days:", bg=Colors.DARK_GRAY, fg='white',
+                 font=Fonts.SMALL_COURIER).grid(row=0, column=0, padx=10, pady=5, sticky='e')
+        days_entry = tk.Entry(input_frame, width=10, font=Fonts.SMALL_COURIER)
         days_entry.insert(0, "0")
         days_entry.grid(row=0, column=1, padx=10, pady=5)
 
         # Hours
-        tk.Label(input_frame, text="Hours:", bg='#2b2b2b', fg='white', font=(
-            'Arial', 12)).grid(row=1, column=0, padx=10, pady=5, sticky='e')
-        hours_entry = tk.Entry(input_frame, width=10, font=('Arial', 12))
+        tk.Label(input_frame, text="Hours:", bg=Colors.DARK_GRAY, fg='white',
+                 font=Fonts.SMALL_COURIER).grid(row=1, column=0, padx=10, pady=5, sticky='e')
+        hours_entry = tk.Entry(input_frame, width=10, font=Fonts.SMALL_COURIER)
         hours_entry.insert(0, "0")
         hours_entry.grid(row=1, column=1, padx=10, pady=5)
 
         # Minutes
-        tk.Label(input_frame, text="Minutes:", bg='#2b2b2b', fg='white', font=(
-            'Arial', 12)).grid(row=2, column=0, padx=10, pady=5, sticky='e')
-        minutes_entry = tk.Entry(input_frame, width=10, font=('Arial', 12))
+        tk.Label(input_frame, text="Minutes:", bg=Colors.DARK_GRAY, fg='white',
+                 font=Fonts.SMALL_COURIER).grid(row=2, column=0, padx=10, pady=5, sticky='e')
+        minutes_entry = tk.Entry(
+            input_frame, width=10, font=Fonts.SMALL_COURIER)
         minutes_entry.insert(0, "0")
         minutes_entry.grid(row=2, column=1, padx=10, pady=5)
 
@@ -317,7 +319,7 @@ class MainMenu(BaseScreen):
                 messagebox.showerror("Error", "Please enter valid numbers!")
 
         # Buttons
-        button_frame = tk.Frame(dialog, bg='#2b2b2b')
+        button_frame = tk.Frame(dialog, bg=Colors.DARK_GRAY)
         button_frame.pack(pady=20)
 
         tk.Button(
@@ -325,7 +327,7 @@ class MainMenu(BaseScreen):
             text="Advance",
             command=do_advance,
             bg='#4a4a4a',
-            font=('Courier', 12),
+            font=Fonts.SMALL_COURIER,
             width=12
         ).pack(side='left', padx=5)
 
@@ -334,7 +336,7 @@ class MainMenu(BaseScreen):
             text="Cancel",
             command=dialog.destroy,
             bg='#4a4a4a',
-            font=('Courier', 12),
+            font=Fonts.SMALL_COURIER,
             width=12
         ).pack(side='left', padx=5)
 
