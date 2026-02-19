@@ -84,7 +84,7 @@ class CampaignScreen(BaseScreen):
         """
         Refresh the list of campaigns
         """
-        
+
         # Clear existing widgets
         for widget in self.campaigns_container.winfo_children():
             widget.destroy()
@@ -127,7 +127,7 @@ class CampaignScreen(BaseScreen):
         """
         Create a card widget for a campaign
         """
-        
+
         # Card frame
         card = tk.Frame(parent, bg='#3a3a3a', relief='raised', bd=2)
         card.pack(fill='x', pady=10, padx=5)
@@ -389,7 +389,7 @@ class CampaignScreen(BaseScreen):
         """
         Show dialog to rename a campaign
         """
-        
+
         dialog = tk.Toplevel(self.app)
         dialog.title("Rename Campaign")
         dialog.geometry("400x250")
@@ -465,7 +465,7 @@ class CampaignScreen(BaseScreen):
         """
         Toggle campaign between active and archived
         """
-        
+
         campaign.change_act()
         status = "active" if campaign.activity else "archived"
         messagebox.showinfo("Success", f"Campaign is now {status}!")
@@ -477,7 +477,7 @@ class CampaignScreen(BaseScreen):
         """
         Delete a campaign
         """
-        
+
         campaign = self.app.current_user.campaigns[campaign_idx]
 
         if messagebox.askyesno(
@@ -499,7 +499,7 @@ class CampaignScreen(BaseScreen):
         """
         Navigate to quest management for this campaign
         """
-        
+
         # Imports here to avoid circular import
         from gui.screens.quest_screen import QuestScreen
 

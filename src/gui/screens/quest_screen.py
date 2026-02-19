@@ -154,7 +154,7 @@ class QuestScreen(BaseScreen):
         """
         Refresh the list of quests based on current view mode
         """
-        
+
         # Clear existing widgets
         for widget in self.quests_container.winfo_children():
             widget.destroy()
@@ -277,7 +277,7 @@ class QuestScreen(BaseScreen):
             quest (Quest_Event): Indiivdual quest to create the card for
             idx (int): Index for specific quest
         """
-        
+
         # Card frame
         card = tk.Frame(parent, bg='#3a3a3a', relief='raised', bd=2)
         card.pack(fill='x', pady=8, padx=5)
@@ -394,7 +394,7 @@ class QuestScreen(BaseScreen):
         """
         Show dialog to create a new quest
         """
-        
+
         dialog = tk.Toplevel(self.app)
         dialog.title("Create New Quest")
         dialog.geometry("550x700")  # Increased height for end time fields
@@ -645,7 +645,7 @@ class QuestScreen(BaseScreen):
             quest (Quest_Event): Quest_Event obj to be edited
             quest_idx (int): Index of Quest_Event
         """
-        
+
         dialog = tk.Toplevel(self.app)
         dialog.title("Edit Quest")
         dialog.geometry("550x700")  # Increased height for end time fields
@@ -924,7 +924,7 @@ class QuestScreen(BaseScreen):
         Args:
             quest_idx (int): Index of quest to delete
         """
-        
+
         quest = self.campaign.quests[quest_idx]
 
         if messagebox.askyesno(
@@ -941,7 +941,7 @@ class QuestScreen(BaseScreen):
         """
         Go back to campaign screen
         """
-        
+
         # Clear quest screen from cache to refresh campaign data
         if "campaign" in self.app.screens:
             self.app.screens["campaign"].destroy()

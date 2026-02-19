@@ -43,7 +43,7 @@ class gq_GUI(tk.Tk):
         """
         Create default realms
         """
-        
+
         return {
             "Central": Realm(
                 name="Central Kingdom",

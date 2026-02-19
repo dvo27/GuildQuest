@@ -53,7 +53,7 @@ class LoginScreen(BaseScreen):
         """
         Show initial Login/Register/Exit buttons
         """
-        
+
         # Clear container
         for widget in self.main_container.winfo_children():
             widget.destroy()
@@ -91,7 +91,7 @@ class LoginScreen(BaseScreen):
         """
         Show login form
         """
-        
+
         # Clear container
         for widget in self.main_container.winfo_children():
             widget.destroy()
@@ -166,7 +166,7 @@ class LoginScreen(BaseScreen):
         """
         Show registration form
         """
-        
+
         # Clear container
         for widget in self.main_container.winfo_children():
             widget.destroy()

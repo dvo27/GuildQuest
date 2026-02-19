@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from models import User
 
+# I could use an abstract factory design pattern here to create multiple types of realms
+
 @dataclass
 class Realm:
     name: str
