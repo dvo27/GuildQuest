@@ -2,6 +2,7 @@
 
 import tkinter as tk
 from tkinter import messagebox
+from gui.themes import Fonts, Colors
 from gui.screens.base_screen import BaseScreen
 from models import User, User_Settings
 
@@ -29,7 +30,7 @@ class LoginScreen(BaseScreen):
         tk.Label(
             art_frame,
             text=art,
-            fg='#00ff00',
+            fg=Colors.GUILD_QUEST_GREEN,
             font=('Courier', 10),
             justify=tk.CENTER  # ← Changed to CENTER
         ).pack()
@@ -67,7 +68,7 @@ class LoginScreen(BaseScreen):
             self.main_container,
             text="Login",
             command=self.show_login_form,
-            font=('courier', 12),
+            font=Fonts.SMALL_COURIER,
             **button_config
         ).pack(pady=10)
 
@@ -75,7 +76,7 @@ class LoginScreen(BaseScreen):
             self.main_container,
             text="Register",
             command=self.show_register_form,
-            font=('courier', 12),
+            font=Fonts.SMALL_COURIER,
             **button_config
         ).pack(pady=10)
 
@@ -83,7 +84,7 @@ class LoginScreen(BaseScreen):
             self.main_container,
             text="Exit",
             command=self.app.destroy,
-            font=('courier', 12),
+            font=Fonts.SMALL_COURIER,
             **button_config
         ).pack(pady=10)
 
@@ -97,31 +98,31 @@ class LoginScreen(BaseScreen):
             widget.destroy()
 
         # Form frame
-        form_frame = tk.Frame(self.main_container, bg='#2b2b2b')
+        form_frame = tk.Frame(self.main_container, bg=Colors.DARK_GRAY)
         form_frame.pack(pady=20)
 
         # Title
         tk.Label(
             form_frame,
             text="Login",
-            font=('Courier', 16, 'bold'),
-            bg='#2b2b2b'
+            font=('Courier', Fonts.SIZE_MEDIUM, 'bold'),
+            bg=Colors.DARK_GRAY
         ).grid(row=0, column=0, columnspan=2, pady=10)
 
         # Username label and entry
         tk.Label(
             form_frame,
             text="Username:",
-            font=('Courier', 12),
-            bg='#2b2b2b'
+            font=Fonts.SMALL_COURIER,
+            bg=Colors.DARK_GRAY
         ).grid(row=1, column=0, padx=10, pady=10, sticky='e')
 
-        username_entry = tk.Entry(form_frame, width=25, font=('Courier', 12))
+        username_entry = tk.Entry(form_frame, width=25, font=Fonts.SMALL_COURIER)
         username_entry.grid(row=1, column=1, padx=10, pady=10)
         username_entry.focus()
 
         # Button frame
-        button_frame = tk.Frame(form_frame, bg='#2b2b2b')
+        button_frame = tk.Frame(form_frame, bg=Colors.DARK_GRAY)
         button_frame.grid(row=2, column=0, columnspan=2, pady=20)
 
         def do_login():
@@ -151,7 +152,7 @@ class LoginScreen(BaseScreen):
             text="Login",
             command=do_login,
             width=15,
-            font=('Courier', 12)
+            font=Fonts.SMALL_COURIER
         ).pack(side='left', padx=5)
 
         tk.Button(
@@ -159,7 +160,7 @@ class LoginScreen(BaseScreen):
             text="Back",
             command=self.show_initial_buttons,
             width=15,
-            font=('Courier', 12)
+            font=Fonts.SMALL_COURIER
         ).pack(side='left', padx=5)
 
     def show_register_form(self):
@@ -172,7 +173,7 @@ class LoginScreen(BaseScreen):
             widget.destroy()
 
         # Form frame
-        form_frame = tk.Frame(self.main_container, bg='#2b2b2b')
+        form_frame = tk.Frame(self.main_container, bg=Colors.DARK_GRAY)
         form_frame.pack(pady=20)
 
         # Title
@@ -189,10 +190,10 @@ class LoginScreen(BaseScreen):
             form_frame,
             text="Username:",
             bg='#2b2b2b',
-            font=('Courier', 12)
+            font=Fonts.SMALL_COURIER
         ).grid(row=1, column=0, padx=10, pady=10, sticky='e')
 
-        username_entry = tk.Entry(form_frame, width=25, font=('Courier', 12))
+        username_entry = tk.Entry(form_frame, width=25, font=Fonts.SMALL_COURIER)
         username_entry.grid(row=1, column=1, padx=10, pady=10)
         username_entry.focus()
 
@@ -206,7 +207,7 @@ class LoginScreen(BaseScreen):
         ).grid(row=2, column=1, sticky='w', padx=10)
 
         # Button frame
-        button_frame = tk.Frame(form_frame, bg='#2b2b2b')
+        button_frame = tk.Frame(form_frame, bg=Colors.DARK_GRAY)
         button_frame.grid(row=3, column=0, columnspan=2, pady=20)
 
         def do_register():
@@ -251,8 +252,8 @@ class LoginScreen(BaseScreen):
             text="Register",
             command=do_register,
             width=15,
-            bg='#4a4a4a',
-            font=('Courier', 12)
+            bg=Colors.DARK_GRAY,
+            font=Fonts.SMALL_COURIER
         ).pack(side='left', padx=5)
 
         tk.Button(
@@ -260,6 +261,6 @@ class LoginScreen(BaseScreen):
             text="Back",
             command=self.show_initial_buttons,
             width=15,
-            bg='#4a4a4a',
-            font=('Courier', 12)
+            bg=Colors.DARK_GRAY,
+            font=Fonts.SMALL_COURIER
         ).pack(side='left', padx=5)
