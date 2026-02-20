@@ -5,6 +5,7 @@ Campaign management screen for GuildQuest: Allows creating, viewing, editing, an
 import tkinter as tk
 from tkinter import messagebox, ttk
 from gui.screens.base_screen import BaseScreen
+from gui.themes import Fonts, Colors
 
 
 class CampaignScreen(BaseScreen):
@@ -24,7 +25,7 @@ class CampaignScreen(BaseScreen):
             text="← Back to Main Menu",
             command=lambda: self.navigate_to("main_menu"),
             bg='#3a3a3a',
-            font=('Courier', 12),
+            font=Fonts.SMALL_COURIER,
             relief='flat'
         ).pack(side='left', padx=10, pady=15)
 
@@ -97,7 +98,7 @@ class CampaignScreen(BaseScreen):
                 self.campaigns_container,
                 text="No campaigns yet! Create your first campaign to get started.",
                 bg='#2b2b2b',
-                fg='#888888',
+                fg=Colors.LIGHT_GRAY,
                 font=('Arial', 14)
             ).pack(pady=50)
         else:
@@ -230,160 +231,327 @@ class CampaignScreen(BaseScreen):
             **button_config
         ).pack(side='left', padx=5)
 
+    # *****NEW IMPLEMENTAION FOR A3*****
+
     def show_create_campaign_dialog(self):
         """
         Show dialog to create a new campaign
         """
+        dialog = self._create_dialog_modal("Create New Campaign", "500x400")
+        form_frame = self._create_form_frame(dialog)
+
+        # Create all form fields
+        name_entry = self._create_campaign_name_field(form_frame)
+        realm_var = self._create_realm_selector(form_frame)
+        timeline_var = self._create_timeline_selector(form_frame)
+
+        form_frame.columnconfigure(1, weight=1)
+
+        # Create action buttons
+        self._create_dialog_buttons(
+            dialog,
+            lambda: self._handle_campaign_creation(
+                dialog, name_entry, realm_var, timeline_var),
+            name_entry
+        )
+
+    ############################################################
+    # NEW HELPER METHODS TO EXTRACT show_create_campaign_dialog
+    ############################################################
+    
+    def _create_dialog_modal(self, title: str, dimensions: str) -> tk.Toplevel:
+        """
+        Create an already styled dialog modal window
+
+        Extracted from show_create_campaign_dialog to reduce complexity.
+        This method handles all dialog window setup including title,
+        size, styling, and modal behavior.
+
+        Args:
+            title (str): Dialog window title
+            dimensions (str): Window size (e.g., "500x400")
+
+        Returns:
+            tk.Toplevel: Configured dialog window
+        """
         dialog = tk.Toplevel(self.app)
-        dialog.title("Create New Campaign")
-        dialog.geometry("500x400")
-        dialog.configure(bg='#2b2b2b')
+        dialog.title(title)
+        dialog.geometry(dimensions)
+        dialog.configure(bg=Colors.DARK_GRAY)
         dialog.grab_set()  # Make dialog modal
 
         # Title
         tk.Label(
             dialog,
-            text="Create New Campaign",
-            bg='#2b2b2b',
+            text=title,
+            bg=Colors.DARK_GRAY,
             fg='white',
             font=('Courier', 18, 'bold')
         ).pack(pady=20)
 
-        # Form frame
-        form_frame = tk.Frame(dialog, bg='#2b2b2b')
-        form_frame.pack(pady=10, padx=40, fill='both', expand=True)
+        return dialog
 
-        # Campaign name
+    def _create_form_frame(self, parent: tk.Widget) -> tk.Frame:
+        """
+        Create the form container frame
+
+        Extracted from show_create_campaign_dialog().
+        Creates a styled frame to hold all form input fields.
+
+        Args:
+            parent: Parent widget (usually the dialog window)
+
+        Returns:
+            tk.Frame: Form frame configured and ready for field placement
+        """
+        form_frame = tk.Frame(parent, bg=Colors.DARK_GRAY)
+        form_frame.pack(pady=10, padx=40, fill='both', expand=True)
+        return form_frame
+
+    def _create_campaign_name_field(self, parent: tk.Frame) -> tk.Entry:
+        """
+        Create campaign name input field with label
+
+        Extracted from show_create_campaign_dialog().
+        Creates the "Campaign Name:" label and text entry widget.
+
+        Args:
+            parent: Parent frame (the form_frame)
+
+        Returns:
+            tk.Entry: Entry widget for campaign name input
+        """
+        # Label
         tk.Label(
-            form_frame,
+            parent,
             text="Campaign Name:",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='white',
-            font=('Courier', 12)
+            font=Fonts.SMALL_COURIER
         ).grid(row=0, column=0, sticky='w', pady=10)
 
-        name_entry = tk.Entry(form_frame, width=30, font=('Arial', 12))
+        # Entry field
+        name_entry = tk.Entry(parent, width=30, font=('Arial', 12))
         name_entry.grid(row=0, column=1, sticky='ew', pady=10, padx=(10, 0))
-        name_entry.focus()
+        name_entry.focus()  # Set initial focus to this field
 
-        # Realm selection
+        return name_entry
+
+    def _create_realm_selector(self, parent: tk.Frame) -> tk.StringVar:
+        """
+        Create realm dropdown with dynamic description label
+
+        Extracted from show_create_campaign_dialog().
+        Creates the realm selection dropdown and description label that
+        updates automatically when the user changes their selection.
+
+        Args:
+            parent: Parent frame (the form_frame)
+
+        Returns:
+            tk.StringVar: Variable holding the selected realm name
+        """
+        # Realm selection label
         tk.Label(
-            form_frame,
+            parent,
             text="Starting Realm:",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='white',
-            font=('Courier', 12)
+            font=Fonts.SMALL_COURIER
         ).grid(row=1, column=0, sticky='w', pady=10)
 
-        realm_var = tk.StringVar(dialog)
+        # Realm dropdown
+        realm_var = tk.StringVar()
         realm_names = list(self.app.realms.keys())
         realm_var.set(realm_names[0])  # Default to first realm
 
-        realm_dropdown = tk.OptionMenu(form_frame, realm_var, *realm_names)
-        realm_dropdown.config(bg='#4a4a4a', fg='white',
-                              font=('Courier', 11), width=25)
-        realm_dropdown.grid(row=1, column=1, sticky='ew',
-                            pady=10, padx=(10, 0))
+        realm_dropdown = tk.OptionMenu(parent, realm_var, *realm_names)
+        realm_dropdown.config(
+            bg='#4a4a4a',
+            fg='white',
+            font=Fonts.SMALL_COURIER,
+            width=25
+        )
+        realm_dropdown.grid(
+            row=1, column=1,
+            sticky='ew',
+            pady=10,
+            padx=(10, 0)
+        )
 
-        # Realm description
+        # Realm description label (updates dynamically)
         realm_desc_label = tk.Label(
-            form_frame,
+            parent,
             text=self.app.realms[realm_var.get()].desc,
-            bg='#2b2b2b',
-            fg='#888888',
+            bg=Colors.DARK_GRAY,
+            fg=Colors.LIGHT_GRAY,
             font=('Courier', 9),
             wraplength=350,
             justify='left'
         )
-        realm_desc_label.grid(row=2, column=0, columnspan=2,
-                              sticky='w', pady=(0, 10))
+        realm_desc_label.grid(
+            row=2, column=0,
+            columnspan=2,
+            sticky='w',
+            pady=(0, 10)
+        )
 
-        # Update description when realm changes
+        # Callback to update description when realm selection changes
         def update_realm_desc(*args):
-            realm_desc_label.config(text=self.app.realms[realm_var.get()].desc)
+            realm_desc_label.config(
+                text=self.app.realms[realm_var.get()].desc
+            )
 
         realm_var.trace_add('write', update_realm_desc)
 
-        # Timeline view preference
+        return realm_var
+
+    def _create_timeline_selector(self, parent: tk.Frame) -> tk.StringVar:
+        """
+        Create timeline view dropdown (day/week/month/year)
+
+        Extracted from show_create_campaign_dialog().
+        Creates the timeline view preference dropdown.
+
+        Args:
+            parent: Parent frame (the form_frame)
+
+        Returns:
+            tk.StringVar: Variable holding the selected timeline view
+        """
+        # Timeline view label
         tk.Label(
-            form_frame,
+            parent,
             text="Default Timeline View:",
-            bg='#2b2b2b',
-            font=('Courier', 12)
+            bg=Colors.DARK_GRAY,
+            fg='white',
+            font=Fonts.SMALL_COURIER
         ).grid(row=3, column=0, sticky='w', pady=10)
 
-        timeline_var = tk.StringVar(dialog)
+        # Timeline dropdown
+        timeline_var = tk.StringVar()
         timeline_options = ["day", "week", "month", "year"]
-        timeline_var.set("day")
+        timeline_var.set("day")  # Default to day view
 
         timeline_dropdown = tk.OptionMenu(
-            form_frame, timeline_var, *timeline_options)
-        timeline_dropdown.config(bg='#4a4a4a', font=('Courier', 11), width=25)
+            parent, timeline_var, *timeline_options)
+        timeline_dropdown.config(
+            bg='#4a4a4a',
+            fg='white',
+            font=Fonts.SMALL_COURIER,
+            width=25
+        )
         timeline_dropdown.grid(
-            row=3, column=1, sticky='ew', pady=10, padx=(10, 0))
+            row=3, column=1,
+            sticky='ew',
+            pady=10,
+            padx=(10, 0)
+        )
 
-        form_frame.columnconfigure(1, weight=1)
+        return timeline_var
 
-        # Buttons
-        button_frame = tk.Frame(dialog, bg='#2b2b2b')
+    def _create_dialog_buttons(self, dialog: tk.Toplevel,
+                               create_callback, name_entry: tk.Entry):
+        """
+        Create dialog action buttons (Create and Cancel)
+
+        Extracted from show_create_campaign_dialog().
+        Creates the button frame with Create and Cancel buttons,
+        and binds the Enter key to the create action.
+
+        Args:
+            dialog: The dialog window
+            create_callback: Function to call when Create button is clicked
+            name_entry: Entry widget to bind Enter key to
+        """
+        button_frame = tk.Frame(dialog, bg=Colors.DARK_GRAY)
         button_frame.pack(pady=20)
 
-        def do_create():
-            name = name_entry.get().strip()
+        # Bind Enter key to create action for convenience
+        name_entry.bind('<Return>', lambda e: create_callback())
 
-            if not name:
-                messagebox.showerror("Error", "Campaign name cannot be empty!")
-                return
-
-            # Get selected realm
-            selected_realm = self.app.realms[realm_var.get()]
-
-            # Get current time from world clock
-            current_time = self.app.world_clock.get_current_time()
-
-            # Create campaign using User's method
-            self.app.current_user.create_camp(
-                c_name=name,
-                activity=True,
-                time=current_time,
-                realm=selected_realm,
-                events_display=timeline_var.get(),
-                quests=[],
-                permitted_users=[self.app.current_user],
-                edit_users=[self.app.current_user]
-            )
-
-            messagebox.showinfo("Success", f"Campaign '{name}' created!")
-            dialog.destroy()
-
-            # Refresh the campaigns list
-            self.refresh_campaigns_list()
-
-            # Refresh main menu to update campaign count
-            if "main_menu" in self.app.screens:
-                self.app.screens["main_menu"].destroy()
-                del self.app.screens["main_menu"]
-
-        # Bind Enter key
-        name_entry.bind('<Return>', lambda e: do_create())
-
+        # Create button
         tk.Button(
             button_frame,
             text="Create Campaign",
-            command=do_create,
+            command=create_callback,
             bg='#4a8a4a',
-            font=('Courier', 12),
+            fg=Colors.DARK_GRAY,
+            font=Fonts.SMALL_COURIER,
             width=15
         ).pack(side='left', padx=5)
 
+        # Cancel button
+        # Button text color appears white for some reason here but works fine
         tk.Button(
             button_frame,
             text="Cancel",
             command=dialog.destroy,
-            bg='#4a4a4a',
-            font=('Courier', 12),
+            bg=Colors.DARK_GRAY,
+            fg='white',
+            font=Fonts.SMALL_COURIER,
             width=15
         ).pack(side='left', padx=5)
+
+    def _handle_campaign_creation(self, dialog: tk.Toplevel,
+                                  name_entry: tk.Entry,
+                                  realm_var: tk.StringVar,
+                                  timeline_var: tk.StringVar):
+        """
+        Handle campaign creation with validation
+
+        Extracted from show_create_campaign_dialog().
+        Validates user input, creates the campaign, displays success message,
+        closes the dialog, and refreshes the UI.
+
+        Args:
+            dialog: Dialog window to close on success
+            name_entry: Entry widget containing the campaign name
+            realm_var: StringVar containing the selected realm name
+            timeline_var: StringVar containing the selected timeline view
+        """
+        # Get and validate campaign name
+        name = name_entry.get().strip()
+
+        if not name:
+            messagebox.showerror("Error", "Campaign name cannot be empty!")
+            return
+
+        # Get selected realm object
+        selected_realm = self.app.realms[realm_var.get()]
+
+        # Get current time from world clock
+        current_time = self.app.world_clock.get_current_time()
+
+        # Create the campaign using User's create_camp method
+        self.app.current_user.create_camp(
+            c_name=name,
+            activity=True,
+            time=current_time,
+            realm=selected_realm,
+            events_display=timeline_var.get(),
+            quests=[],
+            permitted_users=[self.app.current_user],
+            edit_users=[self.app.current_user]
+        )
+
+        # Show success message to user
+        messagebox.showinfo("Success", f"Campaign '{name}' created!")
+
+        # Close the dialog
+        dialog.destroy()
+
+        # Refresh the campaigns list to show the new campaign
+        self.refresh_campaigns_list()
+
+        # Refresh main menu to update campaign count display
+        if "main_menu" in self.app.screens:
+            self.app.screens["main_menu"].destroy()
+            del self.app.screens["main_menu"]
+
+    ############################################################
+    # END OF HELPER METHODS FOR show_create_campaign_dialog
+    ############################################################
 
     def show_rename_dialog(self, campaign):
         """
@@ -414,7 +582,7 @@ class CampaignScreen(BaseScreen):
             dialog,
             text="New name:",
             bg='#2b2b2b',
-            font=('Courier', 12)
+            font=Fonts.SMALL_COURIER
         ).pack(pady=5)
 
         name_entry = tk.Entry(dialog, width=30, font=('Arial', 12))
@@ -448,7 +616,7 @@ class CampaignScreen(BaseScreen):
             text="Rename",
             command=do_rename,
             bg='#4a4a4a',
-            font=('Courier', 12),
+            font=Fonts.SMALL_COURIER,
             width=12
         ).pack(side='left', padx=5)
 
@@ -457,7 +625,7 @@ class CampaignScreen(BaseScreen):
             text="Cancel",
             command=dialog.destroy,
             bg='#4a4a4a',
-            font=('Courier', 12),
+            font=Fonts.SMALL_COURIER,
             width=12
         ).pack(side='left', padx=5)
 
