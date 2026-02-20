@@ -6,9 +6,24 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from gui.screens.base_screen import BaseScreen
 from gui.themes import Fonts, Colors
+from core.CommandManager import CommandManager
+from commands import (
+    DeleteCampaignCommand,
+    CreateCampaignCommand,
+    RenameCampaignCommand,
+    ToggleCampaignStatusCommand
+)
 
 
 class CampaignScreen(BaseScreen):
+    # *****NEW IMPLEMENTAION FOR A3*****
+    def __init__(self, parent, app):
+        """Initialize campaign screen with command manager for undo/redo"""
+        # Initialize command manager BEFORE calling super().__init__
+        # because super().__init__ calls create_widgets()
+        self.command_manager = CommandManager()
+        super().__init__(parent, app)
+
     def create_widgets(self):
         """
         Create the campaign management screen
@@ -45,7 +60,7 @@ class CampaignScreen(BaseScreen):
             text=f"World Clock: {world_time}",
             bg='#1a1a1a',
             fg='#00ff00',
-            font=('Courier', 10)
+            font=Fonts.SMALL_COURIER
         ).pack(side='right', padx=15, pady=15)
 
         # Main content area
@@ -64,15 +79,44 @@ class CampaignScreen(BaseScreen):
             font=('Courier', 20, 'bold')
         ).pack(side='left', padx=10)
 
+        # Button row on the right
+        button_row = tk.Frame(top_section, bg='#2b2b2b')
+        button_row.pack(side='right')
+
+        # Create button
         tk.Button(
-            top_section,
+            button_row,
             text="+ Create New Campaign",
             command=self.show_create_campaign_dialog,
             bg='#4a8a4a',
             font=('Courier', 12, 'bold'),
             width=20,
             height=2
-        ).pack(side='right')
+        ).pack(side='left', padx=5)
+
+        # *****NEW IMPLEMENTAION FOR A3*****
+        # Undo button
+        self.undo_btn = tk.Button(
+            button_row,
+            text="↶ Undo",
+            command=self.undo_last_action,
+            bg='#4a4a4a',
+            font=Fonts.SMALL_COURIER,
+            state='disabled'  # Initially disabled
+        )
+        self.undo_btn.pack(side='left', padx=5)
+
+        # *****NEW IMPLEMENTAION FOR A3*****
+        # Redo button
+        self.redo_btn = tk.Button(
+            button_row,
+            text="↷ Redo",
+            command=self.redo_last_action,
+            bg='#4a4a4a',
+            font=Fonts.SMALL_COURIER,
+            state='disabled'  # Initially disabled
+        )
+        self.redo_btn.pack(side='left', padx=5)
 
         # Campaigns list section
         self.campaigns_container = tk.Frame(content_frame, bg='#2b2b2b')
@@ -80,6 +124,9 @@ class CampaignScreen(BaseScreen):
 
         # Display campaigns
         self.refresh_campaigns_list()
+
+        # *****NEW IMPLEMENTAION FOR A3*****
+        self.update_undo_redo_buttons()
 
     def refresh_campaigns_list(self):
         """
@@ -99,7 +146,7 @@ class CampaignScreen(BaseScreen):
                 text="No campaigns yet! Create your first campaign to get started.",
                 bg='#2b2b2b',
                 fg=Colors.LIGHT_GRAY,
-                font=('Arial', 14)
+                font=('courier', 14)
             ).pack(pady=50)
         else:
             # Create scrollable frame for campaigns
@@ -162,7 +209,7 @@ class CampaignScreen(BaseScreen):
             text=status_text,
             bg=status_color,
             fg='white',
-            font=('Arial', 10, 'bold'),
+            font=('courier', 10, 'bold'),
             padx=10,
             pady=2
         )
@@ -178,7 +225,7 @@ class CampaignScreen(BaseScreen):
             text=info_text,
             bg='#3a3a3a',
             fg='#cccccc',
-            font=('Arial', 10)
+            font=Fonts.SMALL_COURIER
         ).pack(side='left')
 
         # Buttons row
@@ -186,7 +233,7 @@ class CampaignScreen(BaseScreen):
         button_row.pack(fill='x', pady=(10))
 
         button_config = {
-            'font': ('Arial', 10),
+            'font': Fonts.SMALL_COURIER,
             'width': 12,
             'height': 1,
             'relief': 'flat',
@@ -258,7 +305,7 @@ class CampaignScreen(BaseScreen):
     ############################################################
     # NEW HELPER METHODS TO EXTRACT show_create_campaign_dialog
     ############################################################
-    
+
     def _create_dialog_modal(self, title: str, dimensions: str) -> tk.Toplevel:
         """
         Create an already styled dialog modal window
@@ -331,7 +378,7 @@ class CampaignScreen(BaseScreen):
         ).grid(row=0, column=0, sticky='w', pady=10)
 
         # Entry field
-        name_entry = tk.Entry(parent, width=30, font=('Arial', 12))
+        name_entry = tk.Entry(parent, width=30, font=Fonts.SMALL_COURIER)
         name_entry.grid(row=0, column=1, sticky='ew', pady=10, padx=(10, 0))
         name_entry.focus()  # Set initial focus to this field
 
@@ -523,9 +570,11 @@ class CampaignScreen(BaseScreen):
         # Get current time from world clock
         current_time = self.app.world_clock.get_current_time()
 
-        # Create the campaign using User's create_camp method
-        self.app.current_user.create_camp(
-            c_name=name,
+        # *****NEW IMPLEMENTAION FOR A3*****
+        # Create campaign using Command pattern for undo support
+        command = CreateCampaignCommand(
+            user=self.app.current_user,
+            campaign_name=name,
             activity=True,
             time=current_time,
             realm=selected_realm,
@@ -534,6 +583,9 @@ class CampaignScreen(BaseScreen):
             permitted_users=[self.app.current_user],
             edit_users=[self.app.current_user]
         )
+        
+        # *****NEW IMPLEMENTAION FOR A3*****
+        self.command_manager.execute(command)
 
         # *****NEW IMPLEMENTAION FOR A3*****
         self.app.notify('campaign_created')
@@ -547,6 +599,9 @@ class CampaignScreen(BaseScreen):
         # Refresh the campaigns list to show the new campaign
         self.refresh_campaigns_list()
 
+        # *****NEW IMPLEMENTAION FOR A3*****
+        # Update buttons after command is executed
+        self.update_undo_redo_buttons()
 
     ############################################################
     # END OF HELPER METHODS FOR show_create_campaign_dialog
@@ -574,7 +629,7 @@ class CampaignScreen(BaseScreen):
             dialog,
             text=f"Current name: {campaign.title}",
             bg='#2b2b2b',
-            font=('Courier', 10)
+            font=Fonts.SMALL_COURIER
         ).pack(pady=5)
 
         tk.Label(
@@ -584,7 +639,7 @@ class CampaignScreen(BaseScreen):
             font=Fonts.SMALL_COURIER
         ).pack(pady=5)
 
-        name_entry = tk.Entry(dialog, width=30, font=('Arial', 12))
+        name_entry = tk.Entry(dialog, width=30, font=Fonts.SMALL_COURIER)
         name_entry.insert(0, campaign.title)
         name_entry.pack(pady=10)
         name_entry.focus()
@@ -597,13 +652,20 @@ class CampaignScreen(BaseScreen):
                 messagebox.showerror("Error", "Name cannot be empty!")
                 return
 
-            campaign.rename(new_name)
+            # *****NEW IMPLEMENTAION FOR A3*****
+            # Rename using Command pattern for undo support
+            command = RenameCampaignCommand(campaign, new_name)
+            self.command_manager.execute(command)
+            self.update_undo_redo_buttons()
+
             messagebox.showinfo(
                 "Success", f"Campaign renamed to '{new_name}'!")
             dialog.destroy()
 
             # Refresh the campaigns list
             self.refresh_campaigns_list()
+
+            self.update_undo_redo_buttons()
 
         name_entry.bind('<Return>', lambda e: do_rename())
 
@@ -629,37 +691,50 @@ class CampaignScreen(BaseScreen):
         ).pack(side='left', padx=5)
 
     def toggle_campaign_status(self, campaign):
-        """
-        Toggle campaign between active and archived
-        """
+        """Toggle campaign status using Command pattern for undo support"""
 
-        campaign.change_act()
+        # *****NEW IMPLEMENTAION FOR A3*****
+        # Create and execute toggle command
+        command = ToggleCampaignStatusCommand(campaign)
+        self.command_manager.execute(command)
+
         status = "active" if campaign.activity else "archived"
+        self.app.notify('campaign_status_changed')
+
         messagebox.showinfo("Success", f"Campaign is now {status}!")
 
-        # Refresh the campaigns list
+        # Refresh the UI
         self.refresh_campaigns_list()
+        self.update_undo_redo_buttons()
 
     def delete_campaign(self, campaign_idx):
-        """
-        Delete a campaign
-        """
-
+        """Delete a campaign using Command pattern for undo support"""
         campaign = self.app.current_user.campaigns[campaign_idx]
 
         if messagebox.askyesno(
             "Confirm Delete",
-            f"Are you sure you want to delete '{campaign.title}'?\n\nThis will delete all {campaign.get_quest_count()} quest(s) in this campaign.\n\nThis action cannot be undone!"
+            f"Are you sure you want to delete '{campaign.title}'?\n\n"
+            f"This will delete all {campaign.get_quest_count()} quest(s) in this campaign.\n\n"
+            f"This action can be undone using the Undo button."
         ):
-            self.app.current_user.delete_camp(campaign_idx)
-            
             # *****NEW IMPLEMENTAION FOR A3*****
-            self.app.notify('campaign_deleted')
-            
-            messagebox.showinfo("Success", "Campaign deleted!")
+            # Create and execute delete command
+            command = DeleteCampaignCommand(
+                self.app.current_user, campaign_idx)
+            self.command_manager.execute(command)
 
-            # Refresh the campaigns list
+            # *****NEW IMPLEMENTAION FOR A3*****
+            # Notify observers
+            self.app.notify('campaign_deleted')
+
+            messagebox.showinfo("Success",
+                                f"Campaign '{campaign.title}' deleted!\n"
+                                f"Press Undo to restore it."
+                                )
+
+            # Refresh the UI
             self.refresh_campaigns_list()
+            self.update_undo_redo_buttons()
 
     def show_quest_management(self, campaign, campaign_idx):
         """
@@ -689,3 +764,61 @@ class CampaignScreen(BaseScreen):
         # Show quest screen
         quest_screen.pack(fill='both', expand=True)
         self.app.current_screen = screen_key
+
+    # *****NEW IMPLEMENTAION FOR A3*****
+    def undo_last_action(self):
+        """Undo the last command"""
+        if self.command_manager.can_undo():
+            # Schedule undo for after button click event finishes
+            self.after(10, self._perform_undo)
+        else:
+            messagebox.showwarning("Undo", "Nothing to undo!")
+
+    # *****NEW IMPLEMENTAION FOR A3*****
+    def redo_last_action(self):
+        """Redo the last undone command"""
+        if self.command_manager.can_redo():
+            # Schedule redo for after button click event finishes
+            self.after(10, self._perform_redo)
+        else:
+            messagebox.showwarning("Redo", "Nothing to redo!")
+
+    # *****NEW IMPLEMENTAION FOR A3*****
+    def _perform_undo(self):
+        """Actually perform the undo (called after event finishes)"""
+        if self.command_manager.undo():
+            # Schedule UI updates with delays to avoid crash
+            self.after(10, self.refresh_campaigns_list)
+            self.after(20, self.update_undo_redo_buttons)
+            self.after(30, lambda: messagebox.showinfo(
+                "Undo", "Action undone!"))
+        else:
+            messagebox.showwarning("Undo failed")
+
+    # *****NEW IMPLEMENTAION FOR A3*****
+    def _perform_redo(self):
+        """Actually perform the redo (called after event finishes)"""
+        if self.command_manager.redo():
+
+            # Schedule UI updates with delays to avoid crash
+            self.after(10, self.refresh_campaigns_list)
+            self.after(20, self.update_undo_redo_buttons)
+            self.after(30, lambda: messagebox.showinfo(
+                "Redo", "Action redone!"))
+        else:
+            messagebox.showwarning("Redo failed")
+
+    # *****NEW IMPLEMENTAION FOR A3*****
+    def update_undo_redo_buttons(self):
+        """Update undo/redo button states"""
+        # Update undo button - just enable/disable, no description
+        if self.command_manager.can_undo():
+            self.undo_btn.config(state='normal', text="↶ Undo")
+        else:
+            self.undo_btn.config(state='disabled', text="↶ Undo")
+
+        # Update redo button - just enable/disable, no description
+        if self.command_manager.can_redo():
+            self.redo_btn.config(state='normal', text="↷ Redo")
+        else:
+            self.redo_btn.config(state='disabled', text="↷ Redo")

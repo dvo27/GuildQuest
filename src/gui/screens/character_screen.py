@@ -5,11 +5,21 @@ Character management screen for GuildQuest: Allows creating, viewing, editing, a
 import tkinter as tk
 from tkinter import messagebox
 from gui.screens.base_screen import BaseScreen
+from gui.themes import Fonts, Colors
 from models import Item
 from models.CharacterFactoryRegistry import CharacterFactoryRegistry
+from core.CommandManager import CommandManager
+from commands import DeleteCharacterCommand, CreateCharacterCommand
 
 
 class CharacterScreen(BaseScreen):
+
+    # *****NEW IMPLEMENTAION FOR A3*****
+    def __init__(self, parent, app):
+        """Initialize character screen with command manager for undo/redo"""
+        self.command_manager = CommandManager()
+        super().__init__(parent, app)
+
     def create_widgets(self):
         """
         Create the character management screen
@@ -26,7 +36,7 @@ class CharacterScreen(BaseScreen):
             text="← Back to Main Menu",
             command=lambda: self.navigate_to("main_menu"),
             bg='#3a3a3a',
-            font=('Courier', 12),
+            font=Fonts.SMALL_COURIER,
             relief='flat',
             highlightthickness=0
         ).pack(side='left', padx=20, pady=15)
@@ -46,25 +56,29 @@ class CharacterScreen(BaseScreen):
             header_frame,
             text=f"World Clock: {world_time}",
             bg='#1a1a1a',
-            fg='#00ff00',
-            font=('Courier', 10)
+            fg=Colors.GUILD_QUEST_GREEN,
+            font=Fonts.SMALL_COURIER
         ).pack(side='right', padx=5, pady=15)
 
         # Main content area
-        content_frame = tk.Frame(self, bg='#2b2b2b')
+        content_frame = tk.Frame(self, bg=Colors.DARK_GRAY)
         content_frame.pack(fill='both', expand=True, padx=20, pady=20)
 
         # Top section: Title and Create button
-        top_section = tk.Frame(content_frame, bg='#2b2b2b')
+        top_section = tk.Frame(content_frame, bg=Colors.DARK_GRAY)
         top_section.pack(fill='x', pady=(0, 20))
 
         tk.Label(
             top_section,
             text=f"{self.app.current_user.username}'s Characters",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='white',
             font=('Courier', 20, 'bold')
         ).pack(side='left', padx=20)
+
+        # Button row on the right
+        button_row = tk.Frame(top_section, bg=Colors.DARK_GRAY)
+        button_row.pack(side='right')
 
         tk.Button(
             top_section,
@@ -78,12 +92,39 @@ class CharacterScreen(BaseScreen):
             highlightthickness=0
         ).pack(side='right')
 
+        # *****NEW IMPLEMENTAION FOR A3*****
+        # Undo button
+        self.undo_btn = tk.Button(
+            button_row,
+            text="↶ Undo",
+            command=self.undo_last_action,
+            bg='#4a4a4a',
+            font=Fonts.SMALL_COURIER,
+            state='disabled'  # Initially disabled
+        )
+        self.undo_btn.pack(side='left', padx=5)
+
+        # *****NEW IMPLEMENTAION FOR A3*****
+        # Redo button
+        self.redo_btn = tk.Button(
+            button_row,
+            text="↷ Redo",
+            command=self.redo_last_action,
+            bg='#4a4a4a',
+            font=Fonts.SMALL_COURIER,
+            state='disabled'  # Initially disabled
+        )
+        self.redo_btn.pack(side='left', padx=5)
+
         # Characters list section
         self.characters_container = tk.Frame(content_frame, bg='#2b2b2b')
         self.characters_container.pack(fill='both', expand=True)
 
         # Display characters
         self.refresh_characters_list()
+
+        # *****NEW IMPLEMENTAION FOR A3*****
+        self.update_undo_redo_buttons()
 
     def refresh_characters_list(self):
         """
@@ -182,7 +223,7 @@ class CharacterScreen(BaseScreen):
             text=f"⚔️ {character.character_class}",
             bg='#3a3a3a',
             fg='#cccccc',
-            font=('Courier', 12)
+            font=Fonts.SMALL_COURIER
         ).pack(anchor='w', pady=5)
 
         # Inventory info
@@ -192,7 +233,7 @@ class CharacterScreen(BaseScreen):
             text=f"🎒 Inventory: {inventory_count} item(s)",
             bg='#3a3a3a',
             fg='#888888',
-            font=('Courier', 10)
+            font=Fonts.SMALL_COURIER
         ).pack(anchor='w', pady=5)
 
         # Buttons row
@@ -200,7 +241,7 @@ class CharacterScreen(BaseScreen):
         button_row.pack(fill='x', pady=(10, 0))
 
         button_config = {
-            'font': ('Courier', 10),
+            'font': Fonts.SMALL_COURIER,
             'width': 12,
             'height': 1,
             'relief': 'flat',
@@ -267,7 +308,7 @@ class CharacterScreen(BaseScreen):
             text="Character Name:",
             bg='#2b2b2b',
             fg='white',
-            font=('Courier', 12)
+            font=Fonts.SMALL_COURIER
         ).grid(row=0, column=0, sticky='w', pady=10)
 
         name_entry = tk.Entry(form_frame, width=30, font=('Arial', 12))
@@ -280,7 +321,7 @@ class CharacterScreen(BaseScreen):
             text="Class:",
             bg='#2b2b2b',
             fg='white',
-            font=('Courier', 12)
+            font=Fonts.SMALL_COURIER
         ).grid(row=1, column=0, sticky='w', pady=10)
 
         class_var = tk.StringVar(dialog)
@@ -300,7 +341,7 @@ class CharacterScreen(BaseScreen):
             text="Starting Level:",
             bg='#2b2b2b',
             fg='white',
-            font=('Courier', 12)
+            font=Fonts.SMALL_COURIER
         ).grid(row=2, column=0, sticky='w', pady=10)
 
         level_entry = tk.Entry(form_frame, width=30, font=('Arial', 12))
@@ -342,13 +383,22 @@ class CharacterScreen(BaseScreen):
                 level=level
             )
 
-            self.app.current_user.characters.append(character)
+            # *****NEW IMPLEMENTAION FOR A3*****
+            # Handle character creation through command pattern
+            command = CreateCharacterCommand(self.app.current_user, character)
+            self.command_manager.execute(command)
+            self.update_undo_redo_buttons()
 
             # *****NEW IMPLEMENTAION FOR A3*****
             self.app.notify("characters_changed")
 
             messagebox.showinfo("Success", f"Character '{name}' created!")
             dialog.destroy()
+
+            self.refresh_characters_list()
+
+            # *****NEW IMPLEMENTAION FOR A3*****
+            self.update_undo_redo_buttons()
 
         name_entry.bind('<Return>', lambda e: do_create())
 
@@ -357,7 +407,7 @@ class CharacterScreen(BaseScreen):
             text="Create Character",
             command=do_create,
             bg='#4a8a4a',
-            font=('Courier', 12),
+            font=Fonts.SMALL_COURIER,
             width=15,
             relief='flat',
             highlightthickness=0
@@ -368,7 +418,7 @@ class CharacterScreen(BaseScreen):
             text="Cancel",
             command=dialog.destroy,
             bg='#4a4a4a',
-            font=('Courier', 12),
+            font=Fonts.SMALL_COURIER,
             width=15,
             relief='flat',
             highlightthickness=0
@@ -404,7 +454,7 @@ class CharacterScreen(BaseScreen):
             text="Character Name:",
             bg='#2b2b2b',
             fg='white',
-            font=('Courier', 12)
+            font=Fonts.SMALL_COURIER
         ).grid(row=0, column=0, sticky='w', pady=10)
 
         name_entry = tk.Entry(form_frame, width=30, font=('Arial', 12))
@@ -419,7 +469,7 @@ class CharacterScreen(BaseScreen):
             text="Class:",
             bg='#2b2b2b',
             fg='white',
-            font=('Courier', 12)
+            font=Fonts.SMALL_COURIER
         ).grid(row=1, column=0, sticky='w', pady=10)
 
         class_var = tk.StringVar(dialog)
@@ -439,7 +489,7 @@ class CharacterScreen(BaseScreen):
             text="Level:",
             bg='#2b2b2b',
             fg='white',
-            font=('Courier', 12)
+            font=Fonts.SMALL_COURIER
         ).grid(row=2, column=0, sticky='w', pady=10)
 
         level_entry = tk.Entry(form_frame, width=30, font=('Arial', 12))
@@ -477,7 +527,7 @@ class CharacterScreen(BaseScreen):
             character.name = name
             character.level = level
             character.character_class = class_var.get()
-            
+
             # *****NEW IMPLEMENTAION FOR A3*****
             self.app.notify("characters_changed")
 
@@ -491,7 +541,7 @@ class CharacterScreen(BaseScreen):
             text="Save Changes",
             command=do_save,
             bg='#4a8a4a',
-            font=('Courier', 12),
+            font=Fonts.SMALL_COURIER,
             width=15,
             relief='flat',
             highlightthickness=0
@@ -503,7 +553,7 @@ class CharacterScreen(BaseScreen):
             command=dialog.destroy,
             bg='#4a4a4a',
             fg='white',
-            font=('Courier', 12),
+            font=Fonts.SMALL_COURIER,
             width=15,
             relief='flat',
             highlightthickness=0
@@ -520,9 +570,14 @@ class CharacterScreen(BaseScreen):
             "Confirm Delete",
             f"Are you sure you want to delete '{character.name}'?\n\n"
             f"This will also delete {len(character.curr_inventory.items)} item(s) in their inventory.\n\n"
-            "This action cannot be undone!"
+            "This action can be undone using the Undo button!"
         ):
-            deleted = self.app.current_user.characters.pop(char_idx)
+
+            # *****NEW IMPLEMENTAION FOR A3*****
+            # handle character delete through command pattern
+            command = DeleteCharacterCommand(self.app.current_user, char_idx)
+            self.command_manager.execute(command)
+            self.update_undo_redo_buttons()
 
             # *****NEW IMPLEMENTAION FOR A3*****
             self.app.notify("characters_changed")
@@ -580,7 +635,7 @@ class CharacterScreen(BaseScreen):
                     text="No items in inventory",
                     bg='#2b2b2b',
                     fg='#888888',
-                    font=('Courier', 12)
+                    font=Fonts.SMALL_COURIER
                 ).pack(pady=50)
             else:
                 # Create scrollable frame
@@ -634,7 +689,7 @@ class CharacterScreen(BaseScreen):
                         text=f"  •  {item.rarity}",
                         bg='#3a3a3a',
                         fg='#888888',
-                        font=('Courier', 10)
+                        font=Fonts.SMALL_COURIER
                     ).pack(side='left')
 
                     # Damage
@@ -643,7 +698,7 @@ class CharacterScreen(BaseScreen):
                         text=f"  •  Damage: {item.damage}",
                         bg='#3a3a3a',
                         fg='#ffaa00',
-                        font=('Courier', 10)
+                        font=Fonts.SMALL_COURIER
                     ).pack(side='left')
 
                     # Description
@@ -688,7 +743,7 @@ class CharacterScreen(BaseScreen):
             text="Close",
             command=dialog.destroy,
             bg='#4a4a4a',
-            font=('Courier', 12),
+            font=Fonts.SMALL_COURIER,
             width=15,
             relief='flat',
             highlightthickness=0
@@ -724,7 +779,7 @@ class CharacterScreen(BaseScreen):
             text="Item Name:",
             bg='#2b2b2b',
             fg='white',
-            font=('Courier', 12)
+            font=Fonts.SMALL_COURIER
         ).grid(row=0, column=0, sticky='w', pady=10)
 
         name_entry = tk.Entry(form_frame, width=30, font=('Arial', 12))
@@ -737,7 +792,7 @@ class CharacterScreen(BaseScreen):
             text="Rarity:",
             bg='#2b2b2b',
             fg='white',
-            font=('Courier', 12)
+            font=Fonts.SMALL_COURIER
         ).grid(row=1, column=0, sticky='w', pady=10)
 
         rarity_var = tk.StringVar(dialog)
@@ -758,7 +813,7 @@ class CharacterScreen(BaseScreen):
             text="Damage:",
             bg='#2b2b2b',
             fg='white',
-            font=('Courier', 12)
+            font=Fonts.SMALL_COURIER
         ).grid(row=2, column=0, sticky='w', pady=10)
 
         damage_entry = tk.Entry(form_frame, width=30, font=('Arial', 12))
@@ -771,7 +826,7 @@ class CharacterScreen(BaseScreen):
             text="Description:",
             bg='#2b2b2b',
             fg='white',
-            font=('Courier', 12)
+            font=Fonts.SMALL_COURIER
         ).grid(row=3, column=0, sticky='nw', pady=10)
 
         desc_text = tk.Text(form_frame, width=30, height=5, font=('Arial', 11))
@@ -826,7 +881,7 @@ class CharacterScreen(BaseScreen):
             text="Add Item",
             command=do_add,
             bg='#4a8a4a',
-            font=('Courier', 12),
+            font=Fonts.SMALL_COURIER,
             width=12,
             relief='flat',
             highlightthickness=0
@@ -837,12 +892,13 @@ class CharacterScreen(BaseScreen):
             text="Cancel",
             command=dialog.destroy,
             bg='#4a4a4a',
-            font=('Courier', 12),
+            font=Fonts.SMALL_COURIER,
             width=12,
             relief='flat',
             highlightthickness=0
         ).pack(side='left', padx=5)
-        
+
+    # *****NEW IMPLEMENTAION FOR A3*****
     def update(self, subject, event: str, data: dict) -> None:
         if event == "characters_changed":
             self.after(0, self.refresh_characters_list)
@@ -851,4 +907,61 @@ class CharacterScreen(BaseScreen):
             if data.get("user") is self.app.current_user:
                 self.after(0, self.refresh_characters_list)
 
+    # *****NEW IMPLEMENTAION FOR A3*****
+    def undo_last_action(self):
+        """Undo the last command"""
+        if self.command_manager.can_undo():
+            # Schedule undo for after button click event finishes
+            self.after(10, self._perform_undo)
+        else:
+            messagebox.showwarning("Undo", "Nothing to undo!")
 
+    # *****NEW IMPLEMENTAION FOR A3*****
+    def redo_last_action(self):
+        """Redo the last undone command"""
+        if self.command_manager.can_redo():
+            # Schedule redo for after button click event finishes
+            self.after(10, self._perform_redo)
+        else:
+            messagebox.showwarning("Redo", "Nothing to redo!")
+
+    def _perform_undo(self):
+        """Actually perform the undo (called after event finishes)"""
+
+        if self.command_manager.undo():
+
+            # Schedule UI updates with delays to avoid crash
+            self.after(10, self.refresh_characters_list)
+            self.after(20, self.update_undo_redo_buttons)
+            self.after(30, lambda: messagebox.showinfo(
+                "Undo", "Action undone!"))
+        else:
+            messagebox.showwarning("Undo failed")
+
+    def _perform_redo(self):
+        """Actually perform the redo (called after event finishes)"""
+
+        if self.command_manager.redo():
+            
+            # Schedule UI updates with delays to avoid crash
+            self.after(10, self.refresh_characters_list)
+            self.after(20, self.update_undo_redo_buttons)
+            self.after(30, lambda: messagebox.showinfo(
+                "Redo", "Action redone!"))
+        else:
+            messagebox.showwarning("Redo failed")
+
+    # *****NEW IMPLEMENTAION FOR A3*****
+    def update_undo_redo_buttons(self):
+        """Update undo/redo button states and text"""
+        # Update undo button - just enable/disable, no description
+        if self.command_manager.can_undo():
+            self.undo_btn.config(state='normal', text="↶ Undo")
+        else:
+            self.undo_btn.config(state='disabled', text="↶ Undo")
+
+        # Update redo button - just enable/disable, no description
+        if self.command_manager.can_redo():
+            self.redo_btn.config(state='normal', text="↷ Redo")
+        else:
+            self.redo_btn.config(state='disabled', text="↷ Redo")

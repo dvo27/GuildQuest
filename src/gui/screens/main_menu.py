@@ -363,8 +363,7 @@ class MainMenu(BaseScreen):
                     'campaign_created', 
                     'campaign_deleted',
                     'campaign_renamed',        
-                    'campaign_status_changed',
-                    'inventory_changed'  
+                    'campaign_status_changed',  
                     ]:
            self.refresh_counts()
            
