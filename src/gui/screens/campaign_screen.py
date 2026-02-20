@@ -64,23 +64,23 @@ class CampaignScreen(BaseScreen):
         ).pack(side='right', padx=15, pady=15)
 
         # Main content area
-        content_frame = tk.Frame(self, bg='#2b2b2b')
+        content_frame = tk.Frame(self, bg=Colors.DARK_GRAY)
         content_frame.pack(fill='both', expand=True, padx=20, pady=20)
 
         # Top section: Title and Create button
-        top_section = tk.Frame(content_frame, bg='#2b2b2b')
+        top_section = tk.Frame(content_frame, bg=Colors.DARK_GRAY)
         top_section.pack(fill='x', pady=(0, 20))
 
         tk.Label(
             top_section,
             text=f"{self.app.current_user.username}'s Campaigns",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='white',
             font=('Courier', 20, 'bold')
         ).pack(side='left', padx=10)
 
         # Button row on the right
-        button_row = tk.Frame(top_section, bg='#2b2b2b')
+        button_row = tk.Frame(top_section, bg=Colors.DARK_GRAY)
         button_row.pack(side='right')
 
         # Create button
@@ -119,7 +119,7 @@ class CampaignScreen(BaseScreen):
         self.redo_btn.pack(side='left', padx=5)
 
         # Campaigns list section
-        self.campaigns_container = tk.Frame(content_frame, bg='#2b2b2b')
+        self.campaigns_container = tk.Frame(content_frame, bg=Colors.DARK_GRAY)
         self.campaigns_container.pack(fill='both', expand=True)
 
         # Display campaigns
@@ -144,17 +144,17 @@ class CampaignScreen(BaseScreen):
             tk.Label(
                 self.campaigns_container,
                 text="No campaigns yet! Create your first campaign to get started.",
-                bg='#2b2b2b',
+                bg=Colors.DARK_GRAY,
                 fg=Colors.LIGHT_GRAY,
                 font=('courier', 14)
             ).pack(pady=50)
         else:
             # Create scrollable frame for campaigns
             canvas = tk.Canvas(self.campaigns_container,
-                               bg='#2b2b2b', highlightthickness=0)
+                               bg=Colors.DARK_GRAY, highlightthickness=0)
             scrollbar = tk.Scrollbar(
                 self.campaigns_container, orient="vertical", command=canvas.yview)
-            scrollable_frame = tk.Frame(canvas, bg='#2b2b2b')
+            scrollable_frame = tk.Frame(canvas, bg=Colors.DARK_GRAY)
 
             scrollable_frame.bind(
                 "<Configure>",
@@ -612,30 +612,21 @@ class CampaignScreen(BaseScreen):
         Show dialog to rename a campaign
         """
 
-        dialog = tk.Toplevel(self.app)
-        dialog.title("Rename Campaign")
-        dialog.geometry("400x250")
-        dialog.configure(bg='#2b2b2b')
-        dialog.grab_set()
-
-        tk.Label(
-            dialog,
-            text="Rename Campaign",
-            bg='#2b2b2b',
-            font=('Courier', 16, 'bold')
-        ).pack(pady=20)
+        # *****NEW IMPLEMENTAION FOR A3*****
+        dialog = self.create_dialog("Rename Campaign", 400, 250)
+        self.create_dialog_title(dialog, "Rename Campaign")
 
         tk.Label(
             dialog,
             text=f"Current name: {campaign.title}",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             font=Fonts.SMALL_COURIER
         ).pack(pady=5)
 
         tk.Label(
             dialog,
             text="New name:",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             font=Fonts.SMALL_COURIER
         ).pack(pady=5)
 
@@ -669,7 +660,7 @@ class CampaignScreen(BaseScreen):
 
         name_entry.bind('<Return>', lambda e: do_rename())
 
-        button_frame = tk.Frame(dialog, bg='#2b2b2b')
+        button_frame = tk.Frame(dialog, bg=Colors.DARK_GRAY)
         button_frame.pack(pady=20)
 
         tk.Button(

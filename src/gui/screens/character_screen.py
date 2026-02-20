@@ -117,7 +117,7 @@ class CharacterScreen(BaseScreen):
         self.redo_btn.pack(side='left', padx=5)
 
         # Characters list section
-        self.characters_container = tk.Frame(content_frame, bg='#2b2b2b')
+        self.characters_container = tk.Frame(content_frame, bg=Colors.DARK_GRAY)
         self.characters_container.pack(fill='both', expand=True)
 
         # Display characters
@@ -142,17 +142,17 @@ class CharacterScreen(BaseScreen):
             tk.Label(
                 self.characters_container,
                 text="No characters yet! Create your first character to get started.",
-                bg='#2b2b2b',
+                bg=Colors.DARK_GRAY,
                 fg='#888888',
                 font=('Courier', 14)
             ).pack(pady=50)
         else:
             # Create scrollable frame for characters
             canvas = tk.Canvas(self.characters_container,
-                               bg='#2b2b2b', highlightthickness=0)
+                               bg=Colors.DARK_GRAY, highlightthickness=0)
             scrollbar = tk.Scrollbar(
                 self.characters_container, orient="vertical", command=canvas.yview)
-            scrollable_frame = tk.Frame(canvas, bg='#2b2b2b')
+            scrollable_frame = tk.Frame(canvas, bg=Colors.DARK_GRAY)
 
             scrollable_frame.bind(
                 "<Configure>",
@@ -282,31 +282,16 @@ class CharacterScreen(BaseScreen):
         """
         Show dialog to create a new character
         """
-
-        dialog = tk.Toplevel(self.app)
-        dialog.title("Create New Character")
-        dialog.geometry("500x450")
-        dialog.configure(bg='#2b2b2b')
-        dialog.grab_set()
-
-        # Title
-        tk.Label(
-            dialog,
-            text="Create New Character",
-            bg='#2b2b2b',
-            fg='white',
-            font=('Courier', 18, 'bold')
-        ).pack(pady=20)
-
-        # Form frame
-        form_frame = tk.Frame(dialog, bg='#2b2b2b')
-        form_frame.pack(pady=10, padx=40, fill='both', expand=True)
+        # *****NEW IMPLEMENTAION FOR A3*****
+        dialog = self.create_dialog("Create New Character", 500, 450)
+        self.create_dialog_title(dialog, "Create New Character")
+        form_frame = self.create_form_frame(dialog)
 
         # Character name
         tk.Label(
             form_frame,
             text="Character Name:",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='white',
             font=Fonts.SMALL_COURIER
         ).grid(row=0, column=0, sticky='w', pady=10)
@@ -319,7 +304,7 @@ class CharacterScreen(BaseScreen):
         tk.Label(
             form_frame,
             text="Class:",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='white',
             font=Fonts.SMALL_COURIER
         ).grid(row=1, column=0, sticky='w', pady=10)
@@ -339,7 +324,7 @@ class CharacterScreen(BaseScreen):
         tk.Label(
             form_frame,
             text="Starting Level:",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='white',
             font=Fonts.SMALL_COURIER
         ).grid(row=2, column=0, sticky='w', pady=10)
@@ -350,9 +335,9 @@ class CharacterScreen(BaseScreen):
 
         form_frame.columnconfigure(1, weight=1)
 
-        # Buttons
-        button_frame = tk.Frame(dialog, bg='#2b2b2b')
-        button_frame.pack(pady=20)
+        # *****NEW IMPLEMENTAION FOR A3*****
+        # Button frame
+        button_frame = self.create_button_frame(dialog)
 
         def do_create():
             name = name_entry.get().strip()
@@ -429,30 +414,15 @@ class CharacterScreen(BaseScreen):
         Show dialog to edit a character
         """
 
-        dialog = tk.Toplevel(self.app)
-        dialog.title("Edit Character")
-        dialog.geometry("500x450")
-        dialog.configure(bg='#2b2b2b')
-        dialog.grab_set()
-
-        # Title
-        tk.Label(
-            dialog,
-            text="Edit Character",
-            bg='#2b2b2b',
-            fg='white',
-            font=('Courier', 18, 'bold')
-        ).pack(pady=20)
-
-        # Form frame
-        form_frame = tk.Frame(dialog, bg='#2b2b2b')
-        form_frame.pack(pady=10, padx=40, fill='both', expand=True)
+        dialog = self.create_dialog("Edit Character", 500, 450)
+        self.create_dialog_title(dialog, "Edit Character")
+        form_frame = self.create_form_frame(dialog)
 
         # Character name
         tk.Label(
             form_frame,
             text="Character Name:",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='white',
             font=Fonts.SMALL_COURIER
         ).grid(row=0, column=0, sticky='w', pady=10)
@@ -467,7 +437,7 @@ class CharacterScreen(BaseScreen):
         tk.Label(
             form_frame,
             text="Class:",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='white',
             font=Fonts.SMALL_COURIER
         ).grid(row=1, column=0, sticky='w', pady=10)
@@ -487,7 +457,7 @@ class CharacterScreen(BaseScreen):
         tk.Label(
             form_frame,
             text="Level:",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='white',
             font=Fonts.SMALL_COURIER
         ).grid(row=2, column=0, sticky='w', pady=10)
@@ -499,7 +469,7 @@ class CharacterScreen(BaseScreen):
         form_frame.columnconfigure(1, weight=1)
 
         # Buttons
-        button_frame = tk.Frame(dialog, bg='#2b2b2b')
+        button_frame = tk.Frame(dialog, bg=Colors.DARK_GRAY)
         button_frame.pack(pady=20)
 
         def do_save():
@@ -589,20 +559,16 @@ class CharacterScreen(BaseScreen):
         Show inventory management dialog
         """
 
-        dialog = tk.Toplevel(self.app)
-        dialog.title(f"Inventory: {character.name}")
-        dialog.geometry("600x500")
-        dialog.configure(bg='#2b2b2b')
-        dialog.grab_set()
+        dialog = self.create_dialog(f"Inventory: {character.name}", 600, 500)
 
         # Title
-        title_frame = tk.Frame(dialog, bg='#2b2b2b')
+        title_frame = tk.Frame(dialog, bg=Colors.DARK_GRAY)
         title_frame.pack(fill='x', pady=20, padx=20)
 
         tk.Label(
             title_frame,
             text=f"🎒 {character.name}'s Inventory",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='white',
             font=('Courier', 16, 'bold')
         ).pack(side='left')
@@ -620,7 +586,7 @@ class CharacterScreen(BaseScreen):
         ).pack(side='right')
 
         # Inventory list container
-        inventory_container = tk.Frame(dialog, bg='#2b2b2b')
+        inventory_container = tk.Frame(dialog, bg=Colors.DARK_GRAY)
         inventory_container.pack(
             fill='both', expand=True, padx=20, pady=(0, 20))
 
@@ -633,17 +599,17 @@ class CharacterScreen(BaseScreen):
                 tk.Label(
                     inventory_container,
                     text="No items in inventory",
-                    bg='#2b2b2b',
+                    bg=Colors.DARK_GRAY,
                     fg='#888888',
                     font=Fonts.SMALL_COURIER
                 ).pack(pady=50)
             else:
                 # Create scrollable frame
                 canvas = tk.Canvas(inventory_container,
-                                   bg='#2b2b2b', highlightthickness=0)
+                                   bg=Colors.DARK_GRAY, highlightthickness=0)
                 scrollbar = tk.Scrollbar(
                     inventory_container, orient="vertical", command=canvas.yview)
-                scrollable_frame = tk.Frame(canvas, bg='#2b2b2b')
+                scrollable_frame = tk.Frame(canvas, bg=Colors.DARK_GRAY)
 
                 scrollable_frame.bind(
                     "<Configure>",
@@ -753,31 +719,15 @@ class CharacterScreen(BaseScreen):
         """
         Show dialog to add an item to character inventory
         """
-
-        dialog = tk.Toplevel(self.app)
-        dialog.title("Add Item")
-        dialog.geometry("500x500")
-        dialog.configure(bg='#2b2b2b')
-        dialog.grab_set()
-
-        # Title
-        tk.Label(
-            dialog,
-            text="Add Item to Inventory",
-            bg='#2b2b2b',
-            fg='white',
-            font=('Courier', 16, 'bold')
-        ).pack(pady=20)
-
-        # Form frame
-        form_frame = tk.Frame(dialog, bg='#2b2b2b')
-        form_frame.pack(pady=10, padx=40, fill='both', expand=True)
+        dialog = self.create_dialog("Add Item", 500, 500)
+        self.create_dialog_title(dialog, "Add Item to Inventory")
+        form_frame = self.create_form_frame(dialog)
 
         # Item name
         tk.Label(
             form_frame,
             text="Item Name:",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='white',
             font=Fonts.SMALL_COURIER
         ).grid(row=0, column=0, sticky='w', pady=10)
@@ -790,7 +740,7 @@ class CharacterScreen(BaseScreen):
         tk.Label(
             form_frame,
             text="Rarity:",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='white',
             font=Fonts.SMALL_COURIER
         ).grid(row=1, column=0, sticky='w', pady=10)
@@ -811,7 +761,7 @@ class CharacterScreen(BaseScreen):
         tk.Label(
             form_frame,
             text="Damage:",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='white',
             font=Fonts.SMALL_COURIER
         ).grid(row=2, column=0, sticky='w', pady=10)
@@ -824,7 +774,7 @@ class CharacterScreen(BaseScreen):
         tk.Label(
             form_frame,
             text="Description:",
-            bg='#2b2b2b',
+            bg=Colors.DARK_GRAY,
             fg='white',
             font=Fonts.SMALL_COURIER
         ).grid(row=3, column=0, sticky='nw', pady=10)
@@ -835,7 +785,7 @@ class CharacterScreen(BaseScreen):
         form_frame.columnconfigure(1, weight=1)
 
         # Buttons
-        button_frame = tk.Frame(dialog, bg='#2b2b2b')
+        button_frame = tk.Frame(dialog, bg=Colors.DARK_GRAY)
         button_frame.pack(pady=20)
 
         def do_add():

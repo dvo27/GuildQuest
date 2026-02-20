@@ -145,19 +145,8 @@ class MainMenu(BaseScreen):
         Show realm information dialog
         """
 
-        dialog = tk.Toplevel(self.app)
-        dialog.title("Realm Information")
-        dialog.geometry("600x700")
-        dialog.configure(bg=Colors.DARK_GRAY)
-
-        # Title
-        tk.Label(
-            dialog,
-            text="Available Realms",
-            bg=Colors.DARK_GRAY,
-            fg='white',
-            font=('Courier', 18, 'bold')
-        ).pack(pady=20)
+        dialog = self.create_dialog("Realm Information", 600, 700)
+        self.create_dialog_title(dialog, "Available Realms")
 
         # Current world time
         world_time = self.app.world_clock.get_current_time()
@@ -245,19 +234,8 @@ class MainMenu(BaseScreen):
         Show dialog to advance world clock
         """
 
-        dialog = tk.Toplevel(self.app)
-        dialog.title("Advance World Clock")
-        dialog.geometry("400x500")
-        dialog.configure(bg=Colors.DARK_GRAY)
-
-        # Title
-        tk.Label(
-            dialog,
-            text="Advance World Clock",
-            bg=Colors.DARK_GRAY,
-            fg='white',
-            font=('Courier', 16, 'bold')
-        ).pack(pady=20)
+        dialog = self.create_dialog("Advance World Clock", 400, 500)
+        self.create_dialog_title(dialog, "Advance World Clock")
 
         # Current time
         current_time = self.app.world_clock.get_current_time()
