@@ -79,7 +79,7 @@ class QuestScreen(BaseScreen):
 
         tk.Label(
             info_frame,
-            text=f"Quest Events ({len(self.campaign.quests)})",
+            text=f"Quest Events ({self.campaign.get_quest_count()})",
             bg='#2b2b2b',
             fg='white',
             font=('Arial', 20, 'bold')
@@ -159,7 +159,7 @@ class QuestScreen(BaseScreen):
         for widget in self.quests_container.winfo_children():
             widget.destroy()
 
-        quests = self.campaign.quests
+        quests = self.campaign.get_quests()
 
         if not quests:
             # No quests message
@@ -220,7 +220,7 @@ class QuestScreen(BaseScreen):
 
         # Display each quest
         for idx, quest in enumerate(sorted_quests):
-            original_idx = self.campaign.quests.index(quest)
+            original_idx = self.campaign.get_quests().index(quest)
             self.create_quest_card(scrollable_frame, quest, original_idx)
 
     def filter_quests_by_view(self, quests: list, view_mode: str):
@@ -925,7 +925,7 @@ class QuestScreen(BaseScreen):
             quest_idx (int): Index of quest to delete
         """
 
-        quest = self.campaign.quests[quest_idx]
+        quest = self.campaign.get_quests()[quest_idx]
 
         if messagebox.askyesno(
             "Confirm Delete",
