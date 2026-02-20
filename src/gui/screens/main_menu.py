@@ -56,13 +56,14 @@ class MainMenu(BaseScreen):
         num_campaigns = len(self.app.current_user.campaigns)
         num_characters = len(self.app.current_user.characters)
 
-        tk.Label(
+        self.counts_label = tk.Label(
             content_frame,
             text=f"Campaigns: {num_campaigns} | Characters: {num_characters}",
             bg=Colors.DARK_GRAY,
             fg='#888888',
             font=Fonts.SMALL_COURIER
-        ).pack()
+        )
+        self.counts_label.pack()
 
         # BUTTONS AREA
         # Menu buttons container
@@ -353,3 +354,26 @@ class MainMenu(BaseScreen):
         if messagebox.askyesno("Logout", "Are you sure you want to logout?"):
             self.app.current_user = None
             self.navigate_to("login")
+
+    def update(self, subject, event: str, data: dict) -> None:
+        """Handle events from the app"""
+        
+        # Respond to ANY campaign/character changes
+        if event in ['characters_changed',
+                    'campaign_created', 
+                    'campaign_deleted',
+                    'campaign_renamed',        
+                    'campaign_status_changed',
+                    'inventory_changed'  
+                    ]:
+           self.refresh_counts()
+           
+    def refresh_counts(self):
+        """Update the campaign/character counts display"""
+        # Only update if the label exists (MainMenu is created)
+        if hasattr(self, 'counts_label'):
+            num_campaigns = len(self.app.current_user.campaigns)
+            num_characters = len(self.app.current_user.characters)
+            self.counts_label.config(
+                text=f"Campaigns: {num_campaigns} | Characters: {num_characters}"
+            )

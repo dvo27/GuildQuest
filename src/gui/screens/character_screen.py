@@ -344,16 +344,11 @@ class CharacterScreen(BaseScreen):
 
             self.app.current_user.characters.append(character)
 
+            # *****NEW IMPLEMENTAION FOR A3*****
+            self.app.notify("characters_changed")
+
             messagebox.showinfo("Success", f"Character '{name}' created!")
             dialog.destroy()
-
-            # Refresh the characters list
-            self.refresh_characters_list()
-
-            # Refresh main menu to update character count
-            if "main_menu" in self.app.screens:
-                self.app.screens["main_menu"].destroy()
-                del self.app.screens["main_menu"]
 
         name_entry.bind('<Return>', lambda e: do_create())
 
@@ -482,12 +477,12 @@ class CharacterScreen(BaseScreen):
             character.name = name
             character.level = level
             character.character_class = class_var.get()
+            
+            # *****NEW IMPLEMENTAION FOR A3*****
+            self.app.notify("characters_changed")
 
             messagebox.showinfo("Success", "Character updated!")
             dialog.destroy()
-
-            # Refresh the characters list
-            self.refresh_characters_list()
 
         name_entry.bind('<Return>', lambda e: do_save())
 
@@ -527,16 +522,12 @@ class CharacterScreen(BaseScreen):
             f"This will also delete {len(character.curr_inventory.items)} item(s) in their inventory.\n\n"
             "This action cannot be undone!"
         ):
-            self.app.current_user.characters.pop(char_idx)
+            deleted = self.app.current_user.characters.pop(char_idx)
+
+            # *****NEW IMPLEMENTAION FOR A3*****
+            self.app.notify("characters_changed")
+
             messagebox.showinfo("Success", "Character deleted!")
-
-            # Refresh the characters list
-            self.refresh_characters_list()
-
-            # Refresh main menu to update character count
-            if "main_menu" in self.app.screens:
-                self.app.screens["main_menu"].destroy()
-                del self.app.screens["main_menu"]
 
     def show_inventory_management(self, character, char_idx):
         """
@@ -683,9 +674,8 @@ class CharacterScreen(BaseScreen):
         def remove_item(item):
             if messagebox.askyesno("Confirm", f"Remove '{item.name}' from inventory?"):
                 character.curr_inventory.remove_inventory(item)
+
                 refresh_inventory()
-                # Refresh main character list
-                self.refresh_characters_list()
 
         refresh_inventory()
 
@@ -829,9 +819,6 @@ class CharacterScreen(BaseScreen):
             if hasattr(parent_dialog, 'refresh_inventory'):
                 parent_dialog.refresh_inventory()
 
-            # Refresh main character list
-            self.refresh_characters_list()
-
         name_entry.bind('<Return>', lambda e: do_add())
 
         tk.Button(
@@ -855,3 +842,13 @@ class CharacterScreen(BaseScreen):
             relief='flat',
             highlightthickness=0
         ).pack(side='left', padx=5)
+        
+    def update(self, subject, event: str, data: dict) -> None:
+        if event == "characters_changed":
+            self.after(0, self.refresh_characters_list)
+        elif event == "inventory_changed":
+            # only refresh if change impacts current user
+            if data.get("user") is self.app.current_user:
+                self.after(0, self.refresh_characters_list)
+
+

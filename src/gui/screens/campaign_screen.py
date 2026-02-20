@@ -172,7 +172,7 @@ class CampaignScreen(BaseScreen):
         info_row = tk.Frame(content, bg='#3a3a3a')
         info_row.pack(fill='x', pady=5)
 
-        info_text = f"🏰 Realm: {campaign.c_realm.name}  |  📅 Started: {campaign.time.get_fulltime()}  |  📋 Quests: {len(campaign.quests)}"
+        info_text = f"🏰 Realm: {campaign.c_realm.name}  |  📅 Started: {campaign.time.get_fulltime()}  |  📋 Quests: {campaign.get_quest_count()}"
         tk.Label(
             info_row,
             text=info_text,
@@ -535,6 +535,9 @@ class CampaignScreen(BaseScreen):
             edit_users=[self.app.current_user]
         )
 
+        # *****NEW IMPLEMENTAION FOR A3*****
+        self.app.notify('campaign_created')
+
         # Show success message to user
         messagebox.showinfo("Success", f"Campaign '{name}' created!")
 
@@ -544,10 +547,6 @@ class CampaignScreen(BaseScreen):
         # Refresh the campaigns list to show the new campaign
         self.refresh_campaigns_list()
 
-        # Refresh main menu to update campaign count display
-        if "main_menu" in self.app.screens:
-            self.app.screens["main_menu"].destroy()
-            del self.app.screens["main_menu"]
 
     ############################################################
     # END OF HELPER METHODS FOR show_create_campaign_dialog
@@ -650,18 +649,17 @@ class CampaignScreen(BaseScreen):
 
         if messagebox.askyesno(
             "Confirm Delete",
-            f"Are you sure you want to delete '{campaign.title}'?\n\nThis will delete all {len(campaign.quests)} quest(s) in this campaign.\n\nThis action cannot be undone!"
+            f"Are you sure you want to delete '{campaign.title}'?\n\nThis will delete all {campaign.get_quest_count()} quest(s) in this campaign.\n\nThis action cannot be undone!"
         ):
             self.app.current_user.delete_camp(campaign_idx)
+            
+            # *****NEW IMPLEMENTAION FOR A3*****
+            self.app.notify('campaign_deleted')
+            
             messagebox.showinfo("Success", "Campaign deleted!")
 
             # Refresh the campaigns list
             self.refresh_campaigns_list()
-
-            # Refresh main menu to update campaign count
-            if "main_menu" in self.app.screens:
-                self.app.screens["main_menu"].destroy()
-                del self.app.screens["main_menu"]
 
     def show_quest_management(self, campaign, campaign_idx):
         """

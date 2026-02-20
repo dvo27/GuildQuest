@@ -1,10 +1,14 @@
 import tkinter as tk
 from core import WorldClock
 from models import User, Realm
+from core.Observer import Subject
 
-class gq_GUI(tk.Tk):
+class gq_GUI(tk.Tk, Subject):
     def __init__(self):
-        super().__init__()
+        tk.Tk.__init__(self)
+        
+        # *****NEW IMPLEMENTAION FOR A3*****
+        Subject.__init__(self)
 
         # GuildQuest data
         self.world_clock: WorldClock = WorldClock()
